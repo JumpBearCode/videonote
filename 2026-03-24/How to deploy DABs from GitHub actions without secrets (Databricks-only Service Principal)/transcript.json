@@ -37,7 +37,7 @@
   },
   {
     "timestamp": "00:00:42",
-    "text": "So basically my goal is as follows. I want to grab code from the GitHub repository and deploy it to Databricks. And you might say, all right, but we've been doing this already using a service principal defined in Entra with some secret. And it worked, right? So why should we bother with a different approach?"
+    "text": "So basically my goal is as follows. I want to grab code from the GitHub repository and deploy it to Databricks. And you might say, all right, but we've been doing this already using a service principle defined in Entra with some secret. And it worked, right? So why should we bother with a different approach?"
   },
   {
     "timestamp": "00:01:07",
@@ -93,27 +93,27 @@
   },
   {
     "timestamp": "00:02:01",
-    "text": "So what I will do in this episode will be to create a new service principal inside Azure Databricks, now in Entra, in Databricks, and then I will use it during the deployment phase."
+    "text": "So what I will do in this episode will be to create a new service principle inside Azure Databricks, now in Entra, in Databricks, and then I will use it during the deployment phase."
   },
   {
     "timestamp": "00:02:19",
-    "text": "But now, how to make GitHub to be able to use this service principal? Well, that's where we'll create a federation policy object tied with a service principal."
+    "text": "But now, how to make GitHub to be able to use this service principle? Well, that's where we'll create a federation policy object tied with a service principle."
   },
   {
     "timestamp": "00:02:36",
-    "text": "that will define it it will allow GitHub to use this particular service"
+    "text": "that will define it it will allow github to use this particular service"
   },
   {
     "timestamp": "00:02:45",
-    "text": "principal but only from my GitHub repository and only when using specific"
+    "text": "principle but only from my github repository and only when using specific"
   },
   {
     "timestamp": "00:02:53",
-    "text": "GitHub environment like dev and prod and in this scenario tokens will be"
+    "text": "github environment like dev and prod and in this scenario tokens will be"
   },
   {
     "timestamp": "00:02:59",
-    "text": "exchanged between GitHub and Databricks and it will work without providing any"
+    "text": "exchange between github and Databricks and it will work without providing any"
   },
   {
     "timestamp": "00:03:07",
@@ -121,7 +121,7 @@
   },
   {
     "timestamp": "00:03:18",
-    "text": "a GitHub repository, very simple one, this federated identity Databricks. It"
+    "text": "a github repository, very simple one, this federated identity Databricks. It"
   },
   {
     "timestamp": "00:03:24",
@@ -141,7 +141,7 @@
   },
   {
     "timestamp": "00:03:41",
-    "text": "that runs this hello.py script"
+    "text": "that runs this hello py script"
   },
   {
     "timestamp": "00:03:44",
@@ -149,7 +149,7 @@
   },
   {
     "timestamp": "00:03:48",
-    "text": "And I configured a very simple Databricks asset bundle"
+    "text": "And I configured a very simple Databricks as in bundle"
   },
   {
     "timestamp": "00:03:52",
@@ -189,31 +189,31 @@
   },
   {
     "timestamp": "00:04:20",
-    "text": "It's called simple workflow. In our case it is fine. We'll adjust it in a second. Let's give it a name and let's verify what it does. So basically it triggers on a push to main branch, pull request to main and it can be run manually. That's fine."
+    "text": "It's called simple workflow. In our case it is fine. We'll adjust it in a second. Let's give it a name and let's verify what it does. So basically it triggers on a post to main branch, pull request to main and it can be run manually. That's fine."
   },
   {
     "timestamp": "00:04:42",
-    "text": "Then it runs on some Linux machine it gets the repo and it prints some hello world statements which we don't need actually So let me remove this oh or let me remove all of this and that's it and let's commit those changes and please know that I'm doing this directly on the main branch"
+    "text": "Then it runs on some Linux machine it gets the repo and it prints some hello world statements which we don need actually So let me remove this oh or let me remove all of this and that it and let commit those changes and please know that i doing this directly on the main branch"
   },
   {
     "timestamp": "00:05:09",
-    "text": "you shouldn't do this in action in real life but for demo purposes this is fine"
+    "text": "you shouldn't do this in action in real life but for demo proposals this is fine"
   },
   {
     "timestamp": "00:05:14",
-    "text": "and because I made a commit it already resulted in my GitHub action being triggered and actually"
+    "text": "and because I made a commit it already resulted in my github action being triggered and actually"
   },
   {
     "timestamp": "00:05:25",
-    "text": "it went fine it is green it didn't do anything yet with my Databricks code but at least we can see that"
+    "text": "it went fine it is green it didn't do anything yet with my database code but at least we can see that"
   },
   {
     "timestamp": "00:05:32",
-    "text": "the trigger works so let's jump to VS Code let me pull those changes and let's update the workflow"
+    "text": "the trigger works so let's jump to vs code let me pull those changes and let's update the workflow"
   },
   {
     "timestamp": "00:05:42",
-    "text": "definition. And now we know that to deploy Databricks asset bundles we have to first"
+    "text": "definition. And now we know that to deploy Databricks as in bundles we have to first"
   },
   {
     "timestamp": "00:05:50",
@@ -285,7 +285,7 @@
   },
   {
     "timestamp": "00:07:02",
-    "text": "and to deploy stuff to my Databricks environment."
+    "text": "and to deploy stuff to my database environment."
   },
   {
     "timestamp": "00:07:06",
@@ -325,7 +325,7 @@
   },
   {
     "timestamp": "00:07:36",
-    "text": "dev and prod."
+    "text": "dev and prot."
   },
   {
     "timestamp": "00:07:38",
@@ -361,7 +361,7 @@
   },
   {
     "timestamp": "00:08:00",
-    "text": "like dev and prod."
+    "text": "like dev and prot."
   },
   {
     "timestamp": "00:08:03",
@@ -377,7 +377,7 @@
   },
   {
     "timestamp": "00:08:13",
-    "text": "So we have dev and prod, and I will be using dev."
+    "text": "So we have dev and prot, and I will be using dev1."
   },
   {
     "timestamp": "00:08:19",
@@ -457,11 +457,11 @@
   },
   {
     "timestamp": "00:09:48",
-    "text": "And let's create a new policy for this service principal We got to select provider that will use this policy And in our case it is GitHub Actions"
+    "text": "And let create a new policy for this service principal We got to select provider that will use this policy And in our case it is GitHub Actions"
   },
   {
     "timestamp": "00:10:02",
-    "text": "because we want to use this service principal"
+    "text": "because we want to use this service principle"
   },
   {
     "timestamp": "00:10:04",
@@ -501,7 +501,7 @@
   },
   {
     "timestamp": "00:10:42",
-    "text": "Then we've got a choice that allows us to narrow down scenarios in which this policy and the service principal can be used."
+    "text": "Then we've got a choice that allows us to narrow down scenarios in which this policy and the service principle can be used."
   },
   {
     "timestamp": "00:10:55",
@@ -509,11 +509,11 @@
   },
   {
     "timestamp": "00:11:00",
-    "text": "and basically I want to define that this service principal will be allowed to be used only from"
+    "text": "and basically I want to define that this service principle will be allowed to be used only from"
   },
   {
     "timestamp": "00:11:11",
-    "text": "this repository on from this organization and only when deploying stuff to GitHub dev environment"
+    "text": "this repository on from this organization and only when deploying stuff to github dev environment"
   },
   {
     "timestamp": "00:11:21",
@@ -525,7 +525,7 @@
   },
   {
     "timestamp": "00:11:31",
-    "text": "the next thing to do is to basically create this service principal"
+    "text": "the next thing to do is to basically create this service principle"
   },
   {
     "timestamp": "00:11:38",
@@ -541,11 +541,11 @@
   },
   {
     "timestamp": "00:11:45",
-    "text": "in identity and access, service principals"
+    "text": "in identity and access, service principles"
   },
   {
     "timestamp": "00:11:49",
-    "text": "I don't have my service principal available in this workspace yet"
+    "text": "I don't have my service principle available in this workspace yet"
   },
   {
     "timestamp": "00:11:55",
@@ -637,7 +637,7 @@
   },
   {
     "timestamp": "00:13:26",
-    "text": "Secondly, we defined this GitHub OpenID Connect"
+    "text": "Secondly, we defined this GitHub open ID connect"
   },
   {
     "timestamp": "00:13:32",
@@ -653,11 +653,11 @@
   },
   {
     "timestamp": "00:13:47",
-    "text": "and we've got to provide client ID of the service principal"
+    "text": "and we've got to provide client ID of the service principle"
   },
   {
     "timestamp": "00:13:52",
-    "text": "that will be used for the login purposes and we can get this from here that's the application id"
+    "text": "that will be used for the login proposals and we can get this from here that's the application id"
   },
   {
     "timestamp": "00:14:02",
@@ -665,11 +665,11 @@
   },
   {
     "timestamp": "00:14:10",
-    "text": "push this to the repo add that OpenID Connect stuff and hopefully everything will work"
+    "text": "push this to the repo add that open id connect stuff and hopefully everything will work"
   },
   {
     "timestamp": "00:14:20",
-    "text": "so let's jump back to our GitHub repository to actions and let's see if this time deployment"
+    "text": "so let's jump back to our github repository to actions and let's see if this time deployment"
   },
   {
     "timestamp": "00:14:31",
@@ -677,11 +677,11 @@
   },
   {
     "timestamp": "00:14:39",
-    "text": "and actually let's see who is logged in and oh please we can see that display name"
+    "text": "and actually let's see who is locked and oh please we can see that display name"
   },
   {
     "timestamp": "00:14:48",
-    "text": "is set to our service principal that we defined in Databricks So GitHub action uses this service principal credentials"
+    "text": "is set to our service principle that we defined in Databricks So GitHub action uses this service principle credentials"
   },
   {
     "timestamp": "00:15:00",
@@ -697,7 +697,7 @@
   },
   {
     "timestamp": "00:15:10",
-    "text": "to validate our Databricks asset bundle"
+    "text": "to validate our Databricks as a bundle"
   },
   {
     "timestamp": "00:15:12",
@@ -709,7 +709,7 @@
   },
   {
     "timestamp": "00:15:16",
-    "text": "our our action faces green checkbox so let's verify this let's jump to other Databricks workspace"
+    "text": "our our action faces green checkbox so let's verify this let's jump to other database workspace"
   },
   {
     "timestamp": "00:15:27",
@@ -717,7 +717,7 @@
   },
   {
     "timestamp": "00:15:35",
-    "text": "created by using this Databricks managed service principal and let me run it to verify that"
+    "text": "created by using this databricks managed service principal and let me run it to verify that"
   },
   {
     "timestamp": "00:15:41",
@@ -725,7 +725,7 @@
   },
   {
     "timestamp": "00:15:53",
-    "text": "um principal that we created in Databricks and when it comes to tasks it has this very simple"
+    "text": "um principle that we created in databricks and when it comes to tasks it has this very simple"
   },
   {
     "timestamp": "00:16:01",
@@ -737,7 +737,7 @@
   },
   {
     "timestamp": "00:16:17",
-    "text": "one thing to check all right it works and please know that I didn't specify any secret"
+    "text": "one thing to check all right it works and please know that i didn't specify any secret"
   },
   {
     "timestamp": "00:16:26",
@@ -769,11 +769,11 @@
   },
   {
     "timestamp": "00:16:56",
-    "text": "if it will work. Changed it to prod."
+    "text": "if it will work. Changed mf2-prot."
   },
   {
     "timestamp": "00:16:59",
-    "text": "This is to verify if our federation policy indeed restricts the usage of the service principal to the environment only."
+    "text": "This is to verify if our federation policy indeed restricts the usage of the service principal to the dev environment only."
   },
   {
     "timestamp": "00:17:12",
@@ -793,11 +793,11 @@
   },
   {
     "timestamp": "00:17:47",
-    "text": "permissions right just to copy this workflow definition and use it in another repository"
+    "text": "permissions right just to copy this workflow definition and use it in a other repository"
   },
   {
     "timestamp": "00:17:54",
-    "text": "it will fail as well right because the federation policy limits the users of the service principal"
+    "text": "it will fail as well right because the federation policy limits the users of the service principle"
   },
   {
     "timestamp": "00:17:59",
@@ -821,7 +821,7 @@
   },
   {
     "timestamp": "00:18:40",
-    "text": "the code copy it and use it in another place just hoping that I would get access to"
+    "text": "the code copy it and use it in another place just hoping that i would get access to"
   },
   {
     "timestamp": "00:18:48",
@@ -829,7 +829,7 @@
   },
   {
     "timestamp": "00:18:57",
-    "text": "we used a service principal defined in Azure Databricks so our GitHub workflow"
+    "text": "we used a service principle defined in azure databricks so our github workflow"
   },
   {
     "timestamp": "00:19:05",
@@ -865,7 +865,7 @@
   },
   {
     "timestamp": "00:19:34",
-    "text": "but you can deploy more things than Databricks,"
+    "text": "but you can deploy more things than .databricks,"
   },
   {
     "timestamp": "00:19:37",
@@ -877,7 +877,7 @@
   },
   {
     "timestamp": "00:19:43",
-    "text": "using Entra Managed Service Principal."
+    "text": "using Entra Managed Service Principle."
   },
   {
     "timestamp": "00:19:48",
