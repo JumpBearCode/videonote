@@ -1,0 +1,2286 @@
+[
+  {
+    "timestamp": "00:00:00",
+    "text": "2025年祝大家新的一年依然可以保住自己的工作"
+  },
+  {
+    "timestamp": "00:00:03",
+    "text": "新的一年我们也不得不上一些强度了"
+  },
+  {
+    "timestamp": "00:00:07",
+    "text": "我们来做一次完整的system design"
+  },
+  {
+    "timestamp": "00:00:09",
+    "text": "让你design一个VideoSharing Platform"
+  },
+  {
+    "timestamp": "00:00:11",
+    "text": "一旦拿到这个题目的话"
+  },
+  {
+    "timestamp": "00:00:13",
+    "text": "肯定是要思考要设计问题"
+  },
+  {
+    "timestamp": "00:00:15",
+    "text": "它是一个长视频平台还是一个短视频平台"
+  },
+  {
+    "timestamp": "00:00:17",
+    "text": "它可能是一个直播平台"
+  },
+  {
+    "timestamp": "00:00:19",
+    "text": "还是说就是普通的流媒体点播平台"
+  },
+  {
+    "timestamp": "00:00:21",
+    "text": "最近一年问的比较多的"
+  },
+  {
+    "timestamp": "00:00:23",
+    "text": "就是让你design一个TikTok这样的短视频平台"
+  },
+  {
+    "timestamp": "00:00:26",
+    "text": "那么问题来了"
+  },
+  {
+    "timestamp": "00:00:27",
+    "text": "它的功能性需求是什么"
+  },
+  {
+    "timestamp": "00:00:28",
+    "text": "其实还是比较简单的"
+  },
+  {
+    "timestamp": "00:00:31",
+    "text": "因为这一类的系统"
+  },
+  {
+    "timestamp": "00:00:32",
+    "text": "基本上就是data flow in flow out"
+  },
+  {
+    "timestamp": "00:00:34",
+    "text": "就两件事情"
+  },
+  {
+    "timestamp": "00:00:35",
+    "text": "第一个用户可以去自己创作一些视频"
+  },
+  {
+    "timestamp": "00:00:38",
+    "text": "然后上传"
+  },
+  {
+    "timestamp": "00:00:39",
+    "text": "然后第二件事情"
+  },
+  {
+    "timestamp": "00:00:40",
+    "text": "就是另一部分用户"
+  },
+  {
+    "timestamp": "00:00:41",
+    "text": "是可以去观看视频的"
+  },
+  {
+    "timestamp": "00:00:42",
+    "text": "只有data flow in flow out这两条线"
+  },
+  {
+    "timestamp": "00:00:45",
+    "text": "它的非功能性需求有哪些呢"
+  },
+  {
+    "timestamp": "00:00:47",
+    "text": "通常这类用户量比较大的平台"
+  },
+  {
+    "timestamp": "00:00:49",
+    "text": "基本上就是我需要scalability"
+  },
+  {
+    "timestamp": "00:00:51",
+    "text": "因为毕竟我用户量在那里摆着"
+  },
+  {
+    "timestamp": "00:00:54",
+    "text": "然后我要有availability"
+  },
+  {
+    "timestamp": "00:00:56",
+    "text": "你不能说他突然就当机了"
+  },
+  {
+    "timestamp": "00:00:58",
+    "text": "那很多用户用不了"
+  },
+  {
+    "timestamp": "00:01:00",
+    "text": "对商业影响很大"
+  },
+  {
+    "timestamp": "00:01:01",
+    "text": "然后视频要刷的比较快"
+  },
+  {
+    "timestamp": "00:01:03",
+    "text": "比较快"
+  },
+  {
+    "timestamp": "00:01:03",
+    "text": "所以video"
+  },
+  {
+    "timestamp": "00:01:04",
+    "text": "这个观看的latency"
+  },
+  {
+    "timestamp": "00:01:06",
+    "text": "也比较低"
+  },
+  {
+    "timestamp": "00:01:06",
+    "text": "还有一些啥"
+  },
+  {
+    "timestamp": "00:01:08",
+    "text": "比如说"
+  },
+  {
+    "timestamp": "00:01:09",
+    "text": "有些比较次要"
+  },
+  {
+    "timestamp": "00:01:10",
+    "text": "比如说因为你是一个手机"
+  },
+  {
+    "timestamp": "00:01:11",
+    "text": "所以说明"
+  },
+  {
+    "timestamp": "00:01:12",
+    "text": "你平常可能走的是WiFi"
+  },
+  {
+    "timestamp": "00:01:14",
+    "text": "或者流量"
+  },
+  {
+    "timestamp": "00:01:14",
+    "text": "那么这时候"
+  },
+  {
+    "timestamp": "00:01:15",
+    "text": "你的网络可能不太稳定"
+  },
+  {
+    "timestamp": "00:01:17",
+    "text": "所以你会"
+  },
+  {
+    "timestamp": "00:01:18",
+    "text": "可能经常会出现一些错误"
+  },
+  {
+    "timestamp": "00:01:20",
+    "text": "你要有"
+  },
+  {
+    "timestamp": "00:01:21",
+    "text": "error handling"
+  },
+  {
+    "timestamp": "00:01:22",
+    "text": "或者fault tolerance"
+  },
+  {
+    "timestamp": "00:01:22",
+    "text": "我觉得可能就这么多"
+  },
+  {
+    "timestamp": "00:01:25",
+    "text": "那我们就开始吧"
+  },
+  {
+    "timestamp": "00:01:27",
+    "text": "首先"
+  },
+  {
+    "timestamp": "00:01:27",
+    "text": "我们需要带有一些假设"
+  },
+  {
+    "timestamp": "00:01:30",
+    "text": "你觉得它多少的用户量会比较合适"
+  },
+  {
+    "timestamp": "00:01:33",
+    "text": "我们讨论这些东西"
+  },
+  {
+    "timestamp": "00:01:34",
+    "text": "我可以假设这些东西"
+  },
+  {
+    "timestamp": "00:01:35",
+    "text": "其实还是比较流行的产品"
+  },
+  {
+    "timestamp": "00:01:37",
+    "text": "那每天有一个billion的用户"
+  },
+  {
+    "timestamp": "00:01:39",
+    "text": "大概是十亿的用户"
+  },
+  {
+    "timestamp": "00:01:40",
+    "text": "在上面看视频"
+  },
+  {
+    "timestamp": "00:01:41",
+    "text": "这应该是比较合理的"
+  },
+  {
+    "timestamp": "00:01:42",
+    "text": "然后他们可能每天看上"
+  },
+  {
+    "timestamp": "00:01:44",
+    "text": "短视频"
+  },
+  {
+    "timestamp": "00:01:45",
+    "text": "每天看上一百个也很正常"
+  },
+  {
+    "timestamp": "00:01:47",
+    "text": "但是你不一定每个人都在上传"
+  },
+  {
+    "timestamp": "00:01:49",
+    "text": "就算你是专业的up主"
+  },
+  {
+    "timestamp": "00:01:51",
+    "text": "你也可能最多是"
+  },
+  {
+    "timestamp": "00:01:52",
+    "text": "每天就是生产一个"
+  },
+  {
+    "timestamp": "00:01:53",
+    "text": "也就差不多了"
+  },
+  {
+    "timestamp": "00:01:55",
+    "text": "而且大部分人其实看上一个星期都不见得去刷上这么一个"
+  },
+  {
+    "timestamp": "00:01:58",
+    "text": "所以我觉得one video per day应该是比较合理的一个估算"
+  },
+  {
+    "timestamp": "00:02:03",
+    "text": "那接下来的问题是这个视频多大"
+  },
+  {
+    "timestamp": "00:02:06",
+    "text": "那average的话"
+  },
+  {
+    "timestamp": "00:02:08",
+    "text": "我假设它是大概是一分钟的视频可能会十个兆吧"
+  },
+  {
+    "timestamp": "00:02:14",
+    "text": "应该也不会很大"
+  },
+  {
+    "timestamp": "00:02:15",
+    "text": "当然这个数据好像看起来不太不太合理"
+  },
+  {
+    "timestamp": "00:02:18",
+    "text": "我们一会儿真的需要的时候我们再来推算一下"
+  },
+  {
+    "timestamp": "00:02:21",
+    "text": "那每个视频的话"
+  },
+  {
+    "timestamp": "00:02:22",
+    "text": "大概是短视频的办法"
+  },
+  {
+    "timestamp": "00:02:24",
+    "text": "说是15秒到三分钟"
+  },
+  {
+    "timestamp": "00:02:26",
+    "text": "对吧"
+  },
+  {
+    "timestamp": "00:02:26",
+    "text": "那我取平均一分钟"
+  },
+  {
+    "timestamp": "00:02:28",
+    "text": "应该也是合理的"
+  },
+  {
+    "timestamp": "00:02:29",
+    "text": "有了这些数据"
+  },
+  {
+    "timestamp": "00:02:31",
+    "text": "我们就来进入下一个环节"
+  },
+  {
+    "timestamp": "00:02:33",
+    "text": "我们先做一下"
+  },
+  {
+    "timestamp": "00:02:34",
+    "text": "high level的design"
+  },
+  {
+    "timestamp": "00:02:35",
+    "text": "把这个架构大致的画一下"
+  },
+  {
+    "timestamp": "00:02:37",
+    "text": "至于对不对"
+  },
+  {
+    "timestamp": "00:02:38",
+    "text": "我们可以之后再改"
+  },
+  {
+    "timestamp": "00:02:39",
+    "text": "这是client"
+  },
+  {
+    "timestamp": "00:02:52",
+    "text": "请不吝点赞 订阅 转发 打赏支持明镜与点点栏目"
+  },
+  {
+    "timestamp": "00:03:22",
+    "text": "有时候你会觉得"
+  },
+  {
+    "timestamp": "00:03:32",
+    "text": "这是一个high level的design"
+  },
+  {
+    "timestamp": "00:03:34",
+    "text": "其实它基本上没有design任何东西"
+  },
+  {
+    "timestamp": "00:03:36",
+    "text": "这种图可以套到任何一个系统上去"
+  },
+  {
+    "timestamp": "00:03:39",
+    "text": "但是我们这里要确认的是"
+  },
+  {
+    "timestamp": "00:03:40",
+    "text": "我们是不是在解决正确的问题"
+  },
+  {
+    "timestamp": "00:03:42",
+    "text": "所谓正确的问题就是说"
+  },
+  {
+    "timestamp": "00:03:44",
+    "text": "在design video sharing platform这个事情上"
+  },
+  {
+    "timestamp": "00:03:46",
+    "text": "我们应该focus在这个data flow in flow out"
+  },
+  {
+    "timestamp": "00:03:49",
+    "text": "我怎么样把这个数据传进来"
+  },
+  {
+    "timestamp": "00:03:52",
+    "text": "存储"
+  },
+  {
+    "timestamp": "00:03:52",
+    "text": "然后当用户组织的时候"
+  },
+  {
+    "timestamp": "00:03:54",
+    "text": "再给它传出去"
+  },
+  {
+    "timestamp": "00:03:55",
+    "text": "接下来我们要解决两个问题"
+  },
+  {
+    "timestamp": "00:03:56",
+    "text": "根据我们的function requirement"
+  },
+  {
+    "timestamp": "00:03:57",
+    "text": "我们要做两件事情"
+  },
+  {
+    "timestamp": "00:03:59",
+    "text": "第一个我要去上传视频"
+  },
+  {
+    "timestamp": "00:04:00",
+    "text": "第二个我要去观看视频"
+  },
+  {
+    "timestamp": "00:04:02",
+    "text": "我先将这两个服务"
+  },
+  {
+    "timestamp": "00:04:03",
+    "text": "从这个图里面拆开来"
+  },
+  {
+    "timestamp": "00:04:04",
+    "text": "我把它挪一下"
+  },
+  {
+    "timestamp": "00:04:05",
+    "text": "这里我可以将这个backend service拆一下"
+  },
+  {
+    "timestamp": "00:04:09",
+    "text": "比如说我现在这里拆成"
+  },
+  {
+    "timestamp": "00:04:10",
+    "text": "第一个function requirement是upload"
+  },
+  {
+    "timestamp": "00:04:12",
+    "text": "然后第二个requirement是我要去看这个视频将服务拆开来有什么好处"
+  },
+  {
+    "timestamp": "00:04:24",
+    "text": "好处还是挺明显的"
+  },
+  {
+    "timestamp": "00:04:25",
+    "text": "我做了workload isolation"
+  },
+  {
+    "timestamp": "00:04:27",
+    "text": "之前我们也说过"
+  },
+  {
+    "timestamp": "00:04:28",
+    "text": "想要scale up一个系统"
+  },
+  {
+    "timestamp": "00:04:30",
+    "text": "也就是那么三条路"
+  },
+  {
+    "timestamp": "00:04:31",
+    "text": "一个是数据分区"
+  },
+  {
+    "timestamp": "00:04:32",
+    "text": "一个是功能分区"
+  },
+  {
+    "timestamp": "00:04:33",
+    "text": "最多最后一个是增加更多的副本"
+  },
+  {
+    "timestamp": "00:04:36",
+    "text": "那么这里就叫做功能分区"
+  },
+  {
+    "timestamp": "00:04:38",
+    "text": "我将upload service和view service拆开来"
+  },
+  {
+    "timestamp": "00:04:41",
+    "text": "每个service可以独立的去扩展"
+  },
+  {
+    "timestamp": "00:04:43",
+    "text": "这两个其实都可以看作两个无状态服务"
+  },
+  {
+    "timestamp": "00:04:47",
+    "text": "他们可以根据当前的负载"
+  },
+  {
+    "timestamp": "00:04:48",
+    "text": "动态的去调整自己应该承担的容量"
+  },
+  {
+    "timestamp": "00:04:50",
+    "text": "去进行系统的扩容"
+  },
+  {
+    "timestamp": "00:04:52",
+    "text": "而不会相互影响"
+  },
+  {
+    "timestamp": "00:04:53",
+    "text": "storage这块"
+  },
+  {
+    "timestamp": "00:04:55",
+    "text": "我们要增加一个metadata的storage"
+  },
+  {
+    "timestamp": "00:04:57",
+    "text": "因为视频除了数据本身"
+  },
+  {
+    "timestamp": "00:05:00",
+    "text": "除了那个视频本身之外"
+  },
+  {
+    "timestamp": "00:05:01",
+    "text": "我们还要存一些他们的元数据"
+  },
+  {
+    "timestamp": "00:05:04",
+    "text": "比如说他的题目是什么"
+  },
+  {
+    "timestamp": "00:05:07",
+    "text": "然后他的tag是什么"
+  },
+  {
+    "timestamp": "00:05:08",
+    "text": "这些都可以放在元数据里面"
+  },
+  {
+    "timestamp": "00:05:11",
+    "text": "关于metadata存储可以做第一个展开"
+  },
+  {
+    "timestamp": "00:05:13",
+    "text": "我们应该用relational database去存"
+  },
+  {
+    "timestamp": "00:05:15",
+    "text": "还是应该用no SQL去存"
+  },
+  {
+    "timestamp": "00:05:17",
+    "text": "那关系型数据库"
+  },
+  {
+    "timestamp": "00:05:20",
+    "text": "它的好处在哪里"
+  },
+  {
+    "timestamp": "00:05:21",
+    "text": "显然它可以陈述一些关系"
+  },
+  {
+    "timestamp": "00:05:23",
+    "text": "我可以知道"
+  },
+  {
+    "timestamp": "00:05:24",
+    "text": "这些人和这些视频"
+  },
+  {
+    "timestamp": "00:05:26",
+    "text": "有什么关系"
+  },
+  {
+    "timestamp": "00:05:27",
+    "text": "可以知道谁follow了谁"
+  },
+  {
+    "timestamp": "00:05:28",
+    "text": "可以用join的形式"
+  },
+  {
+    "timestamp": "00:05:29",
+    "text": "去进行跨表的查询"
+  },
+  {
+    "timestamp": "00:05:31",
+    "text": "它的缺点在于"
+  },
+  {
+    "timestamp": "00:05:33",
+    "text": "我需要自己去维护data sharding"
+  },
+  {
+    "timestamp": "00:05:35",
+    "text": "我需要自己去解决hotspot"
+  },
+  {
+    "timestamp": "00:05:37",
+    "text": "反过来说"
+  },
+  {
+    "timestamp": "00:05:39",
+    "text": "no SQL已经帮我维护了"
+  },
+  {
+    "timestamp": "00:05:40",
+    "text": "data partition"
+  },
+  {
+    "timestamp": "00:05:40",
+    "text": "sharding这些我所需要的东西"
+  },
+  {
+    "timestamp": "00:05:43",
+    "text": "相对来说"
+  },
+  {
+    "timestamp": "00:05:44",
+    "text": "它的存储也会更加便宜一点"
+  },
+  {
+    "timestamp": "00:05:45",
+    "text": "而它的缺点其实就是"
+  },
+  {
+    "timestamp": "00:05:47",
+    "text": "关系型数据库的优点"
+  },
+  {
+    "timestamp": "00:05:49",
+    "text": "就是说no SQL"
+  },
+  {
+    "timestamp": "00:05:50",
+    "text": "其实不支持事务性的操作"
+  },
+  {
+    "timestamp": "00:05:52",
+    "text": "那我们这里应该选择哪种方案"
+  },
+  {
+    "timestamp": "00:05:54",
+    "text": "那其实这个取决于"
+  },
+  {
+    "timestamp": "00:05:55",
+    "text": "你有什么"
+  },
+  {
+    "timestamp": "00:05:56",
+    "text": "通常你就是"
+  },
+  {
+    "timestamp": "00:05:57",
+    "text": "大家已经用了什么"
+  },
+  {
+    "timestamp": "00:05:59",
+    "text": "我们就跟着去用"
+  },
+  {
+    "timestamp": "00:06:00",
+    "text": "如果你的User表"
+  },
+  {
+    "timestamp": "00:06:00",
+    "text": "已经存在一张MySQL里面"
+  },
+  {
+    "timestamp": "00:06:02",
+    "text": "那我们就继续用"
+  },
+  {
+    "timestamp": "00:06:03",
+    "text": "那个MySQL的表"
+  },
+  {
+    "timestamp": "00:06:04",
+    "text": "另一边"
+  },
+  {
+    "timestamp": "00:06:05",
+    "text": "我们这里的Video Storage"
+  },
+  {
+    "timestamp": "00:06:06",
+    "text": "要怎么去存"
+  },
+  {
+    "timestamp": "00:06:07",
+    "text": "一种是文件存储"
+  },
+  {
+    "timestamp": "00:06:08",
+    "text": "比如说HDFS"
+  },
+  {
+    "timestamp": "00:06:10",
+    "text": "另一种我们现在用比较多的是"
+  },
+  {
+    "timestamp": "00:06:12",
+    "text": "Blob存储或者是Object存储"
+  },
+  {
+    "timestamp": "00:06:13",
+    "text": "这里为什么不用File Storage这些东西"
+  },
+  {
+    "timestamp": "00:06:16",
+    "text": "如果你之前看过"
+  },
+  {
+    "timestamp": "00:06:18",
+    "text": "类似于HDFS这样的系统的话"
+  },
+  {
+    "timestamp": "00:06:21",
+    "text": "你会知道它的优势在于"
+  },
+  {
+    "timestamp": "00:06:23",
+    "text": "它的数据很难丢失"
+  },
+  {
+    "timestamp": "00:06:24",
+    "text": "我会将它切成64-128兆左右的chunk"
+  },
+  {
+    "timestamp": "00:06:27",
+    "text": "然后每个会存储多个replicate"
+  },
+  {
+    "timestamp": "00:06:29",
+    "text": "多个副本"
+  },
+  {
+    "timestamp": "00:06:30",
+    "text": "比如说经典的我会复制三份"
+  },
+  {
+    "timestamp": "00:06:32",
+    "text": "但是它的劣势是在于"
+  },
+  {
+    "timestamp": "00:06:34",
+    "text": "它的读取速度其实并不占优"
+  },
+  {
+    "timestamp": "00:06:35",
+    "text": "然后它的存储空间也偏大"
+  },
+  {
+    "timestamp": "00:06:38",
+    "text": "Blob存储的好处在哪里"
+  },
+  {
+    "timestamp": "00:06:40",
+    "text": "现在来说便宜点"
+  },
+  {
+    "timestamp": "00:06:41",
+    "text": "更加适合我们这里这种"
+  },
+  {
+    "timestamp": "00:06:42",
+    "text": "有大量小的碎片化的文件的场景"
+  },
+  {
+    "timestamp": "00:06:44",
+    "text": "有了这个存储之后"
+  },
+  {
+    "timestamp": "00:06:46",
+    "text": "接下来用户想要去上传视频的话"
+  },
+  {
+    "timestamp": "00:06:48",
+    "text": "他应该怎么办"
+  },
+  {
+    "timestamp": "00:06:49",
+    "text": "一个简单方案就是说"
+  },
+  {
+    "timestamp": "00:06:50",
+    "text": "我用户从这里靠上"
+  },
+  {
+    "timestamp": "00:06:53",
+    "text": "这个Upload Service"
+  },
+  {
+    "timestamp": "00:06:54",
+    "text": "然后把他的视频丢上来就可以了"
+  },
+  {
+    "timestamp": "00:06:56",
+    "text": "但这里其实有一个风险"
+  },
+  {
+    "timestamp": "00:06:57",
+    "text": "因为你不知道用户传的是什么"
+  },
+  {
+    "timestamp": "00:07:00",
+    "text": "你可能他丢了一个"
+  },
+  {
+    "timestamp": "00:07:02",
+    "text": "很超长的视频"
+  },
+  {
+    "timestamp": "00:07:03",
+    "text": "然后你就傻乎乎的"
+  },
+  {
+    "timestamp": "00:07:04",
+    "text": "往你的系统里去存"
+  },
+  {
+    "timestamp": "00:07:05",
+    "text": "然后最后传了发现"
+  },
+  {
+    "timestamp": "00:07:06",
+    "text": "你又不能播"
+  },
+  {
+    "timestamp": "00:07:07",
+    "text": "有版权问题之类的"
+  },
+  {
+    "timestamp": "00:07:09",
+    "text": "这种场景相当于我们直接把我们的storage暴露在外面"
+  },
+  {
+    "timestamp": "00:07:12",
+    "text": "一个比较好的替代方案是当用户调用这upload"
+  },
+  {
+    "timestamp": "00:07:16",
+    "text": "我给他分配一个临时的存储空间"
+  },
+  {
+    "timestamp": "00:07:20",
+    "text": "去存他的原始视频"
+  },
+  {
+    "timestamp": "00:07:22",
+    "text": "上传其实也可以展开来讨论一下"
+  },
+  {
+    "timestamp": "00:07:24",
+    "text": "你要怎么去上传一个视频"
+  },
+  {
+    "timestamp": "00:07:26",
+    "text": "之前我们大概得了一个数据"
+  },
+  {
+    "timestamp": "00:07:28",
+    "text": "就是说一分钟的视频我们估算它是10个megabytes"
+  },
+  {
+    "timestamp": "00:07:34",
+    "text": "那这里可能有点问题"
+  },
+  {
+    "timestamp": "00:07:35",
+    "text": "比如说一分钟应该是60秒"
+  },
+  {
+    "timestamp": "00:07:36",
+    "text": "那每秒钟视频是以帧来组成"
+  },
+  {
+    "timestamp": "00:07:39",
+    "text": "那假设每秒钟是30个frame"
+  },
+  {
+    "timestamp": "00:07:41",
+    "text": "30帧"
+  },
+  {
+    "timestamp": "00:07:42",
+    "text": "那手机用户们"
+  },
+  {
+    "timestamp": "00:07:44",
+    "text": "我假设你低一点吧"
+  },
+  {
+    "timestamp": "00:07:46",
+    "text": "720x480"
+  },
+  {
+    "timestamp": "00:07:47",
+    "text": "这么一个pixel"
+  },
+  {
+    "timestamp": "00:07:49",
+    "text": "这么一个像素值"
+  },
+  {
+    "timestamp": "00:07:50",
+    "text": "那每个像素因为你是RGB嘛"
+  },
+  {
+    "timestamp": "00:07:54",
+    "text": "所以你肯定有三个信道"
+  },
+  {
+    "timestamp": "00:07:55",
+    "text": "每个用一个8个bits的"
+  },
+  {
+    "timestamp": "00:07:58",
+    "text": "这么一个位宽来存"
+  },
+  {
+    "timestamp": "00:08:00",
+    "text": "那大力的看一眼的话"
+  },
+  {
+    "timestamp": "00:08:02",
+    "text": "你这个一分钟"
+  },
+  {
+    "timestamp": "00:08:03",
+    "text": "它应该是不止10个megabytes"
+  },
+  {
+    "timestamp": "00:08:05",
+    "text": "光后面这个时应该已经接近于一个兆了"
+  },
+  {
+    "timestamp": "00:08:09",
+    "text": "所以这样的话"
+  },
+  {
+    "timestamp": "00:08:10",
+    "text": "应该已经有1800兆每秒了"
+  },
+  {
+    "timestamp": "00:08:14",
+    "text": "但是实际情况肯定不是这样"
+  },
+  {
+    "timestamp": "00:08:16",
+    "text": "因为如果你拿流量看视频的话"
+  },
+  {
+    "timestamp": "00:08:18",
+    "text": "你会发现我看一个一分钟视频"
+  },
+  {
+    "timestamp": "00:08:19",
+    "text": "可能也就跑个10兆流量左右"
+  },
+  {
+    "timestamp": "00:08:21",
+    "text": "根据我们的估算值应该是比较接近的"
+  },
+  {
+    "timestamp": "00:08:23",
+    "text": "那这个差距是从哪里得出来"
+  },
+  {
+    "timestamp": "00:08:25",
+    "text": "那你自己想视频是由什么组成"
+  },
+  {
+    "timestamp": "00:08:27",
+    "text": "视频是由图像组成"
+  },
+  {
+    "timestamp": "00:08:28",
+    "text": "而图像其实它是可以压缩的"
+  },
+  {
+    "timestamp": "00:08:30",
+    "text": "说明视频也是可以压缩的那压缩的话其实有两个方向第一个你可能是图片本身是压缩的因为你像我这种白板的背景那它大部分的面积其实是无效性好"
+  },
+  {
+    "timestamp": "00:08:43",
+    "text": "那你这个图像本身"
+  },
+  {
+    "timestamp": "00:08:45",
+    "text": "在空间上可以压缩"
+  },
+  {
+    "timestamp": "00:08:46",
+    "text": "第二个在时间上就可以压缩"
+  },
+  {
+    "timestamp": "00:08:48",
+    "text": "因为我每秒钟30帧"
+  },
+  {
+    "timestamp": "00:08:50",
+    "text": "但我比如说"
+  },
+  {
+    "timestamp": "00:08:51",
+    "text": "我每一帧是不一样"
+  },
+  {
+    "timestamp": "00:08:52",
+    "text": "我这一帧和下一帧之间"
+  },
+  {
+    "timestamp": "00:08:53",
+    "text": "其实如果我在这不动的话"
+  },
+  {
+    "timestamp": "00:08:55",
+    "text": "我应该差别是很小的"
+  },
+  {
+    "timestamp": "00:08:57",
+    "text": "那这样来说"
+  },
+  {
+    "timestamp": "00:08:58",
+    "text": "我图像当中"
+  },
+  {
+    "timestamp": "00:08:59",
+    "text": "应该是能压缩"
+  },
+  {
+    "timestamp": "00:09:00",
+    "text": "很大一部分比例的"
+  },
+  {
+    "timestamp": "00:09:01",
+    "text": "这就说明我在上传upload这个事情上"
+  },
+  {
+    "timestamp": "00:09:04",
+    "text": "我是有压缩的余地的"
+  },
+  {
+    "timestamp": "00:09:05",
+    "text": "我要怎么去设计"
+  },
+  {
+    "timestamp": "00:09:07",
+    "text": "我的upload的这个想法"
+  },
+  {
+    "timestamp": "00:09:08",
+    "text": "第一个想法就是说"
+  },
+  {
+    "timestamp": "00:09:09",
+    "text": "我有一个视频"
+  },
+  {
+    "timestamp": "00:09:10",
+    "text": "我直接当文件传输"
+  },
+  {
+    "timestamp": "00:09:11",
+    "text": "我将文件切成小的chunk"
+  },
+  {
+    "timestamp": "00:09:13",
+    "text": "那假设我每一个chunk"
+  },
+  {
+    "timestamp": "00:09:14",
+    "text": "可能一个兆左右吧"
+  },
+  {
+    "timestamp": "00:09:17",
+    "text": "那切成十个chunk"
+  },
+  {
+    "timestamp": "00:09:18",
+    "text": "那最后会十到十"
+  },
+  {
+    "timestamp": "00:09:20",
+    "text": "便就会切成十个chunk"
+  },
+  {
+    "timestamp": "00:09:21",
+    "text": "那如果哪个chunk失败了"
+  },
+  {
+    "timestamp": "00:09:24",
+    "text": "我就可以重传一下"
+  },
+  {
+    "timestamp": "00:09:25",
+    "text": "那这种情况呢"
+  },
+  {
+    "timestamp": "00:09:26",
+    "text": "在于你其实没有考虑到"
+  },
+  {
+    "timestamp": "00:09:28",
+    "text": "这个视频它本身的特性"
+  },
+  {
+    "timestamp": "00:09:29",
+    "text": "因为假设我这一分钟里面动作幅度不大"
+  },
+  {
+    "timestamp": "00:09:32",
+    "text": "比如说我现在就定在这"
+  },
+  {
+    "timestamp": "00:09:34",
+    "text": "那这几帧前后这几帧这几秒的视频数据的话"
+  },
+  {
+    "timestamp": "00:09:37",
+    "text": "应该说可以压缩成一小块"
+  },
+  {
+    "timestamp": "00:09:40",
+    "text": "相当于我们要考虑到它的syntax"
+  },
+  {
+    "timestamp": "00:09:41",
+    "text": "将视频数据按照segment的形式去进行切分"
+  },
+  {
+    "timestamp": "00:09:47",
+    "text": "按照segment的上传"
+  },
+  {
+    "timestamp": "00:09:48",
+    "text": "这两个方案在这里其实区别不大"
+  },
+  {
+    "timestamp": "00:09:50",
+    "text": "这两个方案其实都可以"
+  },
+  {
+    "timestamp": "00:09:53",
+    "text": "我们之前也分析了"
+  },
+  {
+    "timestamp": "00:09:54",
+    "text": "因为这是一个手机的APP"
+  },
+  {
+    "timestamp": "00:09:56",
+    "text": "所以它天然是使用一个不稳定的网络系统"
+  },
+  {
+    "timestamp": "00:10:00",
+    "text": "它可能是在WiFi"
+  },
+  {
+    "timestamp": "00:10:01",
+    "text": "甚至可能是在流量上"
+  },
+  {
+    "timestamp": "00:10:02",
+    "text": "所以它的上传随时可能中断"
+  },
+  {
+    "timestamp": "00:10:04",
+    "text": "你这样一个视频文件切小一点"
+  },
+  {
+    "timestamp": "00:10:06",
+    "text": "那这样带来的好处是"
+  },
+  {
+    "timestamp": "00:10:08",
+    "text": "你可以进行断点续传"
+  },
+  {
+    "timestamp": "00:10:09",
+    "text": "第一个好处就是你哪边失败了"
+  },
+  {
+    "timestamp": "00:10:12",
+    "text": "你可以重传"
+  },
+  {
+    "timestamp": "00:10:12",
+    "text": "第二个好处就是你可以进行并行的续传了"
+  },
+  {
+    "timestamp": "00:10:16",
+    "text": "你并不需要等待我哪一部分传完了"
+  },
+  {
+    "timestamp": "00:10:18",
+    "text": "你只需要说我切成了十个小块"
+  },
+  {
+    "timestamp": "00:10:21",
+    "text": "或者十个segment"
+  },
+  {
+    "timestamp": "00:10:22",
+    "text": "我四个segment可以同时传输"
+  },
+  {
+    "timestamp": "00:10:24",
+    "text": "传完之后我哪段失败了"
+  },
+  {
+    "timestamp": "00:10:26",
+    "text": "就是重传一下"
+  },
+  {
+    "timestamp": "00:10:27",
+    "text": "直到这十部分全部传完之后"
+  },
+  {
+    "timestamp": "00:10:29",
+    "text": "我再去给一个给出"
+  },
+  {
+    "timestamp": "00:10:30",
+    "text": "我再向upload service给一个signal"
+  },
+  {
+    "timestamp": "00:10:32",
+    "text": "说我这边上传完成"
+  },
+  {
+    "timestamp": "00:10:33",
+    "text": "upload service这边应该收到一个信号"
+  },
+  {
+    "timestamp": "00:10:36",
+    "text": "既然用户已经上传完成"
+  },
+  {
+    "timestamp": "00:10:37",
+    "text": "那下一个事情"
+  },
+  {
+    "timestamp": "00:10:38",
+    "text": "我们就需要处理他们的视频"
+  },
+  {
+    "timestamp": "00:10:39",
+    "text": "这里的话通常需要一个message queue"
+  },
+  {
+    "timestamp": "00:10:41",
+    "text": "我们告知的message queue"
+  },
+  {
+    "timestamp": "00:10:49",
+    "text": "这里有一个视频已经上传好了"
+  },
+  {
+    "timestamp": "00:10:51",
+    "text": "它的地址是在这"
+  },
+  {
+    "timestamp": "00:10:52",
+    "text": "这个real bucket"
+  },
+  {
+    "timestamp": "00:10:53",
+    "text": "那Q里面"
+  },
+  {
+    "timestamp": "00:10:55",
+    "text": "它会生成一个task"
+  },
+  {
+    "timestamp": "00:10:57",
+    "text": "而这个task"
+  },
+  {
+    "timestamp": "00:10:57",
+    "text": "我们需要分配"
+  },
+  {
+    "timestamp": "00:10:59",
+    "text": "分配给一个worker"
+  },
+  {
+    "timestamp": "00:11:00",
+    "text": "所以这里我们需要一个worker"
+  },
+  {
+    "timestamp": "00:11:02",
+    "text": "这样一来呢"
+  },
+  {
+    "timestamp": "00:11:03",
+    "text": "worker的数量"
+  },
+  {
+    "timestamp": "00:11:04",
+    "text": "可以根据Q里面"
+  },
+  {
+    "timestamp": "00:11:05",
+    "text": "积攒的task的数量"
+  },
+  {
+    "timestamp": "00:11:06",
+    "text": "动态来去调整"
+  },
+  {
+    "timestamp": "00:11:07",
+    "text": "worker这里"
+  },
+  {
+    "timestamp": "00:11:08",
+    "text": "一旦收取了这个任务"
+  },
+  {
+    "timestamp": "00:11:10",
+    "text": "它应该去做一连串的事"
+  },
+  {
+    "timestamp": "00:11:11",
+    "text": "第一件事"
+  },
+  {
+    "timestamp": "00:11:12",
+    "text": "它会将这里的原始的"
+  },
+  {
+    "timestamp": "00:11:13",
+    "text": "切成一小分"
+  },
+  {
+    "timestamp": "00:11:15",
+    "text": "一小分的文件"
+  },
+  {
+    "timestamp": "00:11:15",
+    "text": "给它合并成一个"
+  },
+  {
+    "timestamp": "00:11:16",
+    "text": "原来的完整的视频"
+  },
+  {
+    "timestamp": "00:11:17",
+    "text": "在这里肯定是需要做一步"
+  },
+  {
+    "timestamp": "00:11:19",
+    "text": "文件完整性的验证"
+  },
+  {
+    "timestamp": "00:11:20",
+    "text": "那验证完整文件之后呢"
+  },
+  {
+    "timestamp": "00:11:22",
+    "text": "它通常应该要去做转码"
+  },
+  {
+    "timestamp": "00:11:24",
+    "text": "因为你上传的视频"
+  },
+  {
+    "timestamp": "00:11:25",
+    "text": "和你播放视频"
+  },
+  {
+    "timestamp": "00:11:26",
+    "text": "其实并不是同一种视频"
+  },
+  {
+    "timestamp": "00:11:28",
+    "text": "有的时候你可能网速比较差一点"
+  },
+  {
+    "timestamp": "00:11:29",
+    "text": "或者是你的设备比较low一点"
+  },
+  {
+    "timestamp": "00:11:32",
+    "text": "那这个时候"
+  },
+  {
+    "timestamp": "00:11:32",
+    "text": "你应该是播放一些低质量的视频"
+  },
+  {
+    "timestamp": "00:11:35",
+    "text": "那如果有的用户"
+  },
+  {
+    "timestamp": "00:11:36",
+    "text": "他比如说是最新款的iPhone"
+  },
+  {
+    "timestamp": "00:11:37",
+    "text": "对吧"
+  },
+  {
+    "timestamp": "00:11:38",
+    "text": "或者然后他网速比较好"
+  },
+  {
+    "timestamp": "00:11:39",
+    "text": "那这个时候应该给他选择高清视频"
+  },
+  {
+    "timestamp": "00:11:41",
+    "text": "用户播放视频"
+  },
+  {
+    "timestamp": "00:11:43",
+    "text": "应该是根据用户的设备"
+  },
+  {
+    "timestamp": "00:11:44",
+    "text": "和他的网速去动态的去调整的"
+  },
+  {
+    "timestamp": "00:11:46",
+    "text": "而这就代表着"
+  },
+  {
+    "timestamp": "00:11:48",
+    "text": "我们同一个视频"
+  },
+  {
+    "timestamp": "00:11:49",
+    "text": "应该会被转码成不同的格式"
+  },
+  {
+    "timestamp": "00:11:51",
+    "text": "比如说你上传一个1080P的视频"
+  },
+  {
+    "timestamp": "00:11:54",
+    "text": "我至少应该转化成360P"
+  },
+  {
+    "timestamp": "00:11:56",
+    "text": "480P和1080P三个可选的版本"
+  },
+  {
+    "timestamp": "00:11:59",
+    "text": "根据用户当前播放的网速"
+  },
+  {
+    "timestamp": "00:12:01",
+    "text": "我应该去动态的去选择"
+  },
+  {
+    "timestamp": "00:12:03",
+    "text": "我给他播放哪个版本的视频"
+  },
+  {
+    "timestamp": "00:12:04",
+    "text": "当这些任务都完成之后"
+  },
+  {
+    "timestamp": "00:12:06",
+    "text": "Worker Process会把它编码好的视频"
+  },
+  {
+    "timestamp": "00:12:08",
+    "text": "放进到这个存储里"
+  },
+  {
+    "timestamp": "00:12:10",
+    "text": "好像这个数据也应该被写入"
+  },
+  {
+    "timestamp": "00:12:12",
+    "text": "这样一张表格"
+  },
+  {
+    "timestamp": "00:12:14",
+    "text": "那这样一来"
+  },
+  {
+    "timestamp": "00:12:16",
+    "text": "我们需要消掉这个风险"
+  },
+  {
+    "timestamp": "00:12:17",
+    "text": "因为我们的存储"
+  },
+  {
+    "timestamp": "00:12:19",
+    "text": "不再直接通过Upload Service"
+  },
+  {
+    "timestamp": "00:12:20",
+    "text": "放进这个block storage"
+  },
+  {
+    "timestamp": "00:12:22",
+    "text": "而是通过这么一个queue的形式"
+  },
+  {
+    "timestamp": "00:12:24",
+    "text": "将任务委托给了worker"
+  },
+  {
+    "timestamp": "00:12:26",
+    "text": "而worker写完之后"
+  },
+  {
+    "timestamp": "00:12:28",
+    "text": "去写入到这个block storage里面"
+  },
+  {
+    "timestamp": "00:12:31",
+    "text": "那么他在里面要更新什么"
+  },
+  {
+    "timestamp": "00:12:32",
+    "text": "这个里面很可能会存储一个"
+  },
+  {
+    "timestamp": "00:12:35",
+    "text": "task的状态"
+  },
+  {
+    "timestamp": "00:12:36",
+    "text": "比如说client去调用"
+  },
+  {
+    "timestamp": "00:12:38",
+    "text": "这个upload service"
+  },
+  {
+    "timestamp": "00:12:39",
+    "text": "那一开始"
+  },
+  {
+    "timestamp": "00:12:40",
+    "text": "这个视频对应的"
+  },
+  {
+    "timestamp": "00:12:41",
+    "text": "他的状态应该是start"
+  },
+  {
+    "timestamp": "00:12:43",
+    "text": "当使用户上传完之后"
+  },
+  {
+    "timestamp": "00:12:46",
+    "text": "他给我们一个信号"
+  },
+  {
+    "timestamp": "00:12:47",
+    "text": "那这个时候他应该转成ready"
+  },
+  {
+    "timestamp": "00:12:49",
+    "text": "有了ready这个状态"
+  },
+  {
+    "timestamp": "00:12:50",
+    "text": "你才会创建对应的这样一个coding的一个tasktask创建之后worker会来领取这个任务这个时候应该转入processing处理当中处理完之后worker应该给我们一个信号"
+  },
+  {
+    "timestamp": "00:13:03",
+    "text": "将最后的metadata"
+  },
+  {
+    "timestamp": "00:13:04",
+    "text": "改成complete或者是done"
+  },
+  {
+    "timestamp": "00:13:05",
+    "text": "这个里面很有可能"
+  },
+  {
+    "timestamp": "00:13:07",
+    "text": "你在任何一部分出错"
+  },
+  {
+    "timestamp": "00:13:08",
+    "text": "对吧"
+  },
+  {
+    "timestamp": "00:13:09",
+    "text": "processing如果失败了"
+  },
+  {
+    "timestamp": "00:13:10",
+    "text": "这里应该触发一个retry"
+  },
+  {
+    "timestamp": "00:13:11",
+    "text": "retry代表着你的任务"
+  },
+  {
+    "timestamp": "00:13:15",
+    "text": "应该转回到"
+  },
+  {
+    "timestamp": "00:13:16",
+    "text": "这个ready的状态"
+  },
+  {
+    "timestamp": "00:13:16",
+    "text": "等着下一次重试"
+  },
+  {
+    "timestamp": "00:13:18",
+    "text": "直到最终完成"
+  },
+  {
+    "timestamp": "00:13:23",
+    "text": "对比我们一开始"
+  },
+  {
+    "timestamp": "00:13:24",
+    "text": "直接upload service这种"
+  },
+  {
+    "timestamp": "00:13:26",
+    "text": "Video放进block storage这种方案"
+  },
+  {
+    "timestamp": "00:13:28",
+    "text": "这种方案呢"
+  },
+  {
+    "timestamp": "00:13:30",
+    "text": "虽然非常简洁"
+  },
+  {
+    "timestamp": "00:13:30",
+    "text": "但是它有额外的风险"
+  },
+  {
+    "timestamp": "00:13:31",
+    "text": "而现在引入了"
+  },
+  {
+    "timestamp": "00:13:33",
+    "text": "Message Queue和Worker Pool"
+  },
+  {
+    "timestamp": "00:13:34",
+    "text": "我们消除了一些潜在的风险"
+  },
+  {
+    "timestamp": "00:13:36",
+    "text": "但是我们又增加了复杂度"
+  },
+  {
+    "timestamp": "00:13:38",
+    "text": "我们需要额外去维护"
+  },
+  {
+    "timestamp": "00:13:39",
+    "text": "Queue和Worker这两个组件"
+  },
+  {
+    "timestamp": "00:13:41",
+    "text": "第二个function requirement"
+  },
+  {
+    "timestamp": "00:13:43",
+    "text": "是用户可能要去看视频"
+  },
+  {
+    "timestamp": "00:13:44",
+    "text": "最简单直接的方法"
+  },
+  {
+    "timestamp": "00:13:47",
+    "text": "就是用户去调用这个View Service"
+  },
+  {
+    "timestamp": "00:13:48",
+    "text": "然后这个时候"
+  },
+  {
+    "timestamp": "00:13:49",
+    "text": "View Service去读一下"
+  },
+  {
+    "timestamp": "00:13:50",
+    "text": "我有哪些Metadata"
+  },
+  {
+    "timestamp": "00:13:51",
+    "text": "然后再去读一下"
+  },
+  {
+    "timestamp": "00:13:52",
+    "text": "这些Metadata"
+  },
+  {
+    "timestamp": "00:13:53",
+    "text": "对应的Video是什么"
+  },
+  {
+    "timestamp": "00:13:54",
+    "text": "将这些Video"
+  },
+  {
+    "timestamp": "00:13:55",
+    "text": "直接返回给用户就可以了"
+  },
+  {
+    "timestamp": "00:13:57",
+    "text": "说到坏处"
+  },
+  {
+    "timestamp": "00:13:57",
+    "text": "我的分发可能会比较慢"
+  },
+  {
+    "timestamp": "00:13:58",
+    "text": "甚至有可能"
+  },
+  {
+    "timestamp": "00:13:59",
+    "text": "因为某一个视频比较流行"
+  },
+  {
+    "timestamp": "00:14:01",
+    "text": "大家都在观看"
+  },
+  {
+    "timestamp": "00:14:02",
+    "text": "那这样的话"
+  },
+  {
+    "timestamp": "00:14:02",
+    "text": "会造成一个Hotspot"
+  },
+  {
+    "timestamp": "00:14:03",
+    "text": "一个简单的优化方案是"
+  },
+  {
+    "timestamp": "00:14:05",
+    "text": "我们在这里引入一个CDN"
+  },
+  {
+    "timestamp": "00:14:06",
+    "text": "CDN可以放在"
+  },
+  {
+    "timestamp": "00:14:08",
+    "text": "离用户比较近的位置"
+  },
+  {
+    "timestamp": "00:14:09",
+    "text": "直接去代替"
+  },
+  {
+    "timestamp": "00:14:10",
+    "text": "我们读Block Storage"
+  },
+  {
+    "timestamp": "00:14:11",
+    "text": "进行视频的分发"
+  },
+  {
+    "timestamp": "00:14:13",
+    "text": "用户通过View Service"
+  },
+  {
+    "timestamp": "00:14:15",
+    "text": "调用了一个CDN"
+  },
+  {
+    "timestamp": "00:14:16",
+    "text": "拿到CDN里的视频"
+  },
+  {
+    "timestamp": "00:14:17",
+    "text": "然后直接返回给用户"
+  },
+  {
+    "timestamp": "00:14:18",
+    "text": "但是引入CDN并不代表"
+  },
+  {
+    "timestamp": "00:14:21",
+    "text": "我们就可以无脑使用了"
+  },
+  {
+    "timestamp": "00:14:22",
+    "text": "虽然我们通过把视频放在CDN里"
+  },
+  {
+    "timestamp": "00:14:24",
+    "text": "优化了它的传输速度"
+  },
+  {
+    "timestamp": "00:14:26",
+    "text": "降低了延迟"
+  },
+  {
+    "timestamp": "00:14:26",
+    "text": "但是我们也引入额外的cost"
+  },
+  {
+    "timestamp": "00:14:28",
+    "text": "因为CDN会比较贵"
+  },
+  {
+    "timestamp": "00:14:30",
+    "text": "所以我们希望CDN的视频"
+  },
+  {
+    "timestamp": "00:14:32",
+    "text": "尽量的是那些热门视频"
+  },
+  {
+    "timestamp": "00:14:33",
+    "text": "这样的话我们可以提高使用CDN的效率"
+  },
+  {
+    "timestamp": "00:14:37",
+    "text": "这里我使用一个额外的extractor service"
+  },
+  {
+    "timestamp": "00:14:40",
+    "text": "我们定期的去从block storage里"
+  },
+  {
+    "timestamp": "00:14:45",
+    "text": "把那些流行的视频找出来"
+  },
+  {
+    "timestamp": "00:14:47",
+    "text": "然后将它推送到CDN"
+  },
+  {
+    "timestamp": "00:14:49",
+    "text": "去替换到那些已经过时的视频"
+  },
+  {
+    "timestamp": "00:14:51",
+    "text": "这个方案提升了CDN的使用效率"
+  },
+  {
+    "timestamp": "00:14:56",
+    "text": "但是它带来了额外的成本"
+  },
+  {
+    "timestamp": "00:14:58",
+    "text": "我添加了一个额外的组件"
+  },
+  {
+    "timestamp": "00:14:59",
+    "text": "这样一来"
+  },
+  {
+    "timestamp": "00:15:00",
+    "text": "我的维护成本也增加了"
+  },
+  {
+    "timestamp": "00:15:01",
+    "text": "如果我们想要进一步优化latency的话"
+  },
+  {
+    "timestamp": "00:15:03",
+    "text": "我们可以将视频考虑一张视频"
+  },
+  {
+    "timestamp": "00:15:05",
+    "text": "切成完整的小段"
+  },
+  {
+    "timestamp": "00:15:05",
+    "text": "或者引入流媒体协议"
+  },
+  {
+    "timestamp": "00:15:07",
+    "text": "因为你在手机上看视频的时候"
+  },
+  {
+    "timestamp": "00:15:08",
+    "text": "你通常是一点这个视频"
+  },
+  {
+    "timestamp": "00:15:10",
+    "text": "可以开始播放"
+  },
+  {
+    "timestamp": "00:15:10",
+    "text": "你不需要等到整个视频去下载完"
+  },
+  {
+    "timestamp": "00:15:12",
+    "text": "我们可以继续使用之前的方案"
+  },
+  {
+    "timestamp": "00:15:14",
+    "text": "就是说我将视频切成小的segment"
+  },
+  {
+    "timestamp": "00:15:16",
+    "text": "那你看到什么地方"
+  },
+  {
+    "timestamp": "00:15:17",
+    "text": "我就只把这个segment推送给你"
+  },
+  {
+    "timestamp": "00:15:19",
+    "text": "然后根据你当前的网速和你的设备"
+  },
+  {
+    "timestamp": "00:15:21",
+    "text": "可以选择一个标清"
+  },
+  {
+    "timestamp": "00:15:23",
+    "text": "或者是高清的视频"
+  },
+  {
+    "timestamp": "00:15:24",
+    "text": "去动态去调整"
+  },
+  {
+    "timestamp": "00:15:25",
+    "text": "那另一种方案呢"
+  },
+  {
+    "timestamp": "00:15:26",
+    "text": "就是说我们这里可以"
+  },
+  {
+    "timestamp": "00:15:27",
+    "text": "引出一个streaming protocol"
+  },
+  {
+    "timestamp": "00:15:28",
+    "text": "那比较常见的就是"
+  },
+  {
+    "timestamp": "00:15:30",
+    "text": "苹果所推出的HLS Streaming"
+  },
+  {
+    "timestamp": "00:15:32",
+    "text": "这种流媒体协议"
+  },
+  {
+    "timestamp": "00:15:33",
+    "text": "这也是一种控制视频流出传输的方案"
+  },
+  {
+    "timestamp": "00:15:36",
+    "text": "但引入流媒体协议"
+  },
+  {
+    "timestamp": "00:15:37",
+    "text": "你肯定要考虑到"
+  },
+  {
+    "timestamp": "00:15:38",
+    "text": "流媒体协议通常来说"
+  },
+  {
+    "timestamp": "00:15:39",
+    "text": "会受到平台的约束"
+  },
+  {
+    "timestamp": "00:15:41",
+    "text": "你不同的设备选择的协议"
+  },
+  {
+    "timestamp": "00:15:42",
+    "text": "有可能是不一样的"
+  },
+  {
+    "timestamp": "00:15:43",
+    "text": "具体要选择什么协议"
+  },
+  {
+    "timestamp": "00:15:44",
+    "text": "还是要根据"
+  },
+  {
+    "timestamp": "00:15:45",
+    "text": "现有的用户来进行数据分析"
+  },
+  {
+    "timestamp": "00:15:47",
+    "text": "到这里为止"
+  },
+  {
+    "timestamp": "00:15:48",
+    "text": "你应该已经满足了"
+  },
+  {
+    "timestamp": "00:15:49",
+    "text": "最基础的两个方式的requirement"
+  },
+  {
+    "timestamp": "00:15:50",
+    "text": "如果你想进一步"
+  },
+  {
+    "timestamp": "00:15:52",
+    "text": "去展示一下你技术深度"
+  },
+  {
+    "timestamp": "00:15:53",
+    "text": "我建议你可以去"
+  },
+  {
+    "timestamp": "00:15:54",
+    "text": "下面这块show off一下"
+  },
+  {
+    "timestamp": "00:15:55",
+    "text": "比如说我可以在这里"
+  },
+  {
+    "timestamp": "00:15:57",
+    "text": "引入一个机器学习的模型"
+  },
+  {
+    "timestamp": "00:15:59",
+    "text": "目前来说"
+  },
+  {
+    "timestamp": "00:16:01",
+    "text": "我们的View Service"
+  },
+  {
+    "timestamp": "00:16:02",
+    "text": "是选择一个"
+  },
+  {
+    "timestamp": "00:16:03",
+    "text": "比较简单的feed的形式"
+  },
+  {
+    "timestamp": "00:16:04",
+    "text": "就是说我直接去"
+  },
+  {
+    "timestamp": "00:16:06",
+    "text": "数据库里看一下"
+  },
+  {
+    "timestamp": "00:16:07",
+    "text": "我选关注哪些人"
+  },
+  {
+    "timestamp": "00:16:08",
+    "text": "他们最近发了什么视频"
+  },
+  {
+    "timestamp": "00:16:09",
+    "text": "将他们发的视频"
+  },
+  {
+    "timestamp": "00:16:10",
+    "text": "按照倒序排一下"
+  },
+  {
+    "timestamp": "00:16:11",
+    "text": "形成一个newsfeed"
+  },
+  {
+    "timestamp": "00:16:13",
+    "text": "然后推送给用户"
+  },
+  {
+    "timestamp": "00:16:14",
+    "text": "这就可以了"
+  },
+  {
+    "timestamp": "00:16:15",
+    "text": "那另外一种形式呢"
+  },
+  {
+    "timestamp": "00:16:16",
+    "text": "我们可以去做"
+  },
+  {
+    "timestamp": "00:16:17",
+    "text": "根据不同的视频"
+  },
+  {
+    "timestamp": "00:16:18",
+    "text": "给出不同的权重"
+  },
+  {
+    "timestamp": "00:16:19",
+    "text": "然后去做推荐系统"
+  },
+  {
+    "timestamp": "00:16:21",
+    "text": "但是推荐系统"
+  },
+  {
+    "timestamp": "00:16:22",
+    "text": "就引入了额外要求"
+  },
+  {
+    "timestamp": "00:16:24",
+    "text": "需要我们去维护一个"
+  },
+  {
+    "timestamp": "00:16:25",
+    "text": "机器学习团队"
+  },
+  {
+    "timestamp": "00:16:26",
+    "text": "去做这个事情"
+  },
+  {
+    "timestamp": "00:16:26",
+    "text": "比如说我们可以在这里"
+  },
+  {
+    "timestamp": "00:16:28",
+    "text": "引入一个双塔模型"
+  },
+  {
+    "timestamp": "00:16:30",
+    "text": "将用户特征和视频特征"
+  },
+  {
+    "timestamp": "00:16:32",
+    "text": "分别embedding成一个向量"
+  },
+  {
+    "timestamp": "00:16:34",
+    "text": "当用户想要观看视频的时候"
+  },
+  {
+    "timestamp": "00:16:36",
+    "text": "我们根据用户的特征"
+  },
+  {
+    "timestamp": "00:16:37",
+    "text": "去选取用户可能感兴趣的视频"
+  },
+  {
+    "timestamp": "00:16:40",
+    "text": "直接推荐给他"
+  },
+  {
+    "timestamp": "00:16:41",
+    "text": "他的好处是能帮助我们"
+  },
+  {
+    "timestamp": "00:16:43",
+    "text": "优化视频观看的指标"
+  },
+  {
+    "timestamp": "00:16:44",
+    "text": "用户可能会花更多的时间去看视频"
+  },
+  {
+    "timestamp": "00:16:46",
+    "text": "但他坏处是"
+  },
+  {
+    "timestamp": "00:16:47",
+    "text": "我们会要引入额外的专业人员"
+  },
+  {
+    "timestamp": "00:16:49",
+    "text": "来帮助我们搭建模型"
+  },
+  {
+    "timestamp": "00:16:51",
+    "text": "进行推理和部署"
+  },
+  {
+    "timestamp": "00:16:52",
+    "text": "另一方面"
+  },
+  {
+    "timestamp": "00:16:52",
+    "text": "我们也要引入更多的追踪指标"
+  },
+  {
+    "timestamp": "00:16:54",
+    "text": "来分析用户模型的好和坏"
+  },
+  {
+    "timestamp": "00:16:56",
+    "text": "最后如果你还有时间"
+  },
+  {
+    "timestamp": "00:16:58",
+    "text": "你可以谈一谈数据治理的问题"
+  },
+  {
+    "timestamp": "00:16:59",
+    "text": "比如说不同的地区"
+  },
+  {
+    "timestamp": "00:17:00",
+    "text": "对你这样的video sharing的平台"
+  },
+  {
+    "timestamp": "00:17:02",
+    "text": "会有不同的要求"
+  },
+  {
+    "timestamp": "00:17:03",
+    "text": "像TikTok这样的公司"
+  },
+  {
+    "timestamp": "00:17:05",
+    "text": "它至少会有三个数据中心"
+  },
+  {
+    "timestamp": "00:17:06",
+    "text": "在中国会有一个"
+  },
+  {
+    "timestamp": "00:17:07",
+    "text": "在美国会有一个"
+  },
+  {
+    "timestamp": "00:17:08",
+    "text": "在其他地区也会有一个"
+  },
+  {
+    "timestamp": "00:17:09",
+    "text": "每个地区"
+  },
+  {
+    "timestamp": "00:17:11",
+    "text": "为这数据的治理"
+  },
+  {
+    "timestamp": "00:17:12",
+    "text": "产生不同的要求"
+  },
+  {
+    "timestamp": "00:17:13",
+    "text": "你需要对他们"
+  },
+  {
+    "timestamp": "00:17:13",
+    "text": "进行独立的处理"
+  }
+]

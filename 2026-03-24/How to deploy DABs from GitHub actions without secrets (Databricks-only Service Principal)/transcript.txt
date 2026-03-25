@@ -1,0 +1,223 @@
+Hey there. So let's say you implemented your Databricks code,
+you store it in a GitHub repository,
+and now you would like to deploy it to
+Azure Databricks in a secure way without using
+your personal accounts or any passwords or secrets.
+In this episode, I will show you how to do this
+securely using federated credentials defined in Azure Databricks.
+So let's get started.
+Alright, so let me show you the scenario. So basically we have a GitHub repository with our code and I have a target Databricks workspace to which I would like to deploy stuff.
+So basically my goal is as follows. I want to grab code from the GitHub repository and deploy it to Databricks. And you might say, all right, but we've been doing this already using a service principal defined in Entra with some secret. And it worked, right? So why should we bother with a different approach?
+And the reason is, yes, this approach works, but it has two big issues.
+So first of all, a secret, a password is used.
+That might leak and someone might use it in a malicious way to mess around with your environment.
+Which is a risk, right?
+The second thing is that those secrets, they have expiration period.
+And they have to be rotated periodically.
+and then update it in your deployment pipeline.
+And very often people forget to do so,
+which results in your deployment to start failing.
+And that's why we want to use a different method.
+We want to skip using those passwords entirely.
+And at the same time, we want it to be secure.
+And that's where federated credentials will be very useful.
+So what I will do in this episode will be to create a new service principal inside Azure Databricks, now in Entra, in Databricks, and then I will use it during the deployment phase.
+But now, how to make GitHub to be able to use this service principal? Well, that's where we'll create a federation policy object tied with a service principal.
+that will define it it will allow GitHub to use this particular service
+principal but only from my GitHub repository and only when using specific
+GitHub environment like dev and prod and in this scenario tokens will be
+exchanged between GitHub and Databricks and it will work without providing any
+secrets or any passwords explicitly. So let me show you that in action. So I have
+a GitHub repository, very simple one, this federated identity Databricks. It
+It contains a very simple code that I cloned to my local machine.
+And basically what I have here is a job definition,
+Databricks job, this hello world one,
+that contains only a single Python step
+that runs this hello.py script
+that in turn prints hello world statement.
+And I configured a very simple Databricks asset bundle
+use to deploy this job to a target environment.
+A very simple scenario.
+Now, in my GitHub repository,
+I don't have any actions defined yet
+to deploy my stuff to Databricks.
+So let's start with doing this.
+And to avoid creating everything from scratch,
+let me use this very simple template.
+So let me find it.
+It's called simple workflow. In our case it is fine. We'll adjust it in a second. Let's give it a name and let's verify what it does. So basically it triggers on a push to main branch, pull request to main and it can be run manually. That's fine.
+Then it runs on some Linux machine it gets the repo and it prints some hello world statements which we don't need actually So let me remove this oh or let me remove all of this and that's it and let's commit those changes and please know that I'm doing this directly on the main branch
+you shouldn't do this in action in real life but for demo purposes this is fine
+and because I made a commit it already resulted in my GitHub action being triggered and actually
+it went fine it is green it didn't do anything yet with my Databricks code but at least we can see that
+the trigger works so let's jump to VS Code let me pull those changes and let's update the workflow
+definition. And now we know that to deploy Databricks asset bundles we have to first
+of all install Databricks CLI and then run this Databricks bundle validate and
+Databricks bundle deploy commands. So let's add them to our workflow definition.
+So let me just copy them
+and paste it.
+Alright, so here it is.
+Install Databricks CLI,
+check who is logged into Databricks to Databricks CLI
+and then validate and deploy my Databricks asset bundle.
+So let me commit this to the repository
+like added Databricks steps
+and let's push it.
+that should trigger the pipeline, deployment pipeline,
+that is running.
+And actually at this moment, it should fail, right?
+Because we didn't specify any authentication yet.
+So it would be very bad if anyone could just deploy
+and define a deployment workflow to connect
+and to deploy stuff to my Databricks environment.
+So we expect this to fail.
+And it did, it failed.
+With error that default authentication,
+I cannot configure default credentials, blah, blah, blah.
+Basically, it means that we are not authenticated.
+So let's fix this.
+So following our design, we would like to make it secure.
+So first of all, in my GitHub environment,
+in my repository, I will create two environments,
+dev and prod.
+And that's basically what you do in your projects
+because you might use different variables,
+different secrets per environment,
+or you might have a different protection rules
+per environment.
+And we'll use those environments
+in our federation policy in a second.
+So let me define those environments
+like dev and prod.
+I will not configure them in any way
+because that's not necessary at this point.
+We just need them to exist.
+So we have dev and prod, and I will be using dev.
+The next step is to create our service principal
+in Azure Databricks, not in Entra, in Azure Databricks.
+This scenario focuses on doing everything inside Databricks.
+And by the way, that's my Databricks workspace.
+And we can see that at this moment,
+there are no jobs deployed yet.
+I mean, I have some leftovers from previous demos,
+but we don't have this hello world job.
+So to add a new service principal,
+I will switch to Databricks account console.
+this view that is available only to Databricks account admins, so it requires high privileges.
+Then in user management, I will just create a new service principal and let's call it
+Databricks managed service principal dev as follows.
+And yes, please create this.
+Alright, so we have a service principal, an identity in context of which our deployment will be executed.
+But we don't have this federation policy yet.
+This thing that allows GitHub to use this credential.
+And to make it work, we've got to create it, right?
+So let's jump into credentials and secrets tab.
+And let's create a new policy for this service principal We got to select provider that will use this policy And in our case it is GitHub Actions
+because we want to use this service principal
+from GitHub Actions.
+Then we've got to provide a name of our GitHub organization.
+In my case, it is Table on Azure.
+You can see this in a URL to your repo.
+So let me copy this.
+Then we've got to provide a repository that will be allowed to use our service principal.
+And in my case, it is federated identity Databricks.
+Again, from URL.
+So let me paste this.
+Then we've got a choice that allows us to narrow down scenarios in which this policy and the service principal can be used.
+I want to use environments. That's why we defined them previously.
+and basically I want to define that this service principal will be allowed to be used only from
+this repository on from this organization and only when deploying stuff to GitHub dev environment
+that's what we are configuring here and the rest of the stuff is fine and let me create the policy
+and that's it
+the next thing to do is to basically create this service principal
+in my Databricks workspace
+so let's jump back to my workspace
+and here in the settings
+in identity and access, service principals
+I don't have my service principal available in this workspace yet
+so let me add it
+that's the name of my service principal
+and yes please add it. So what I did right now
+was to make this Databricks managed
+dev service principal available
+in my target Databricks workspace
+right and that's it. So we have
+everything configured on the Databricks
+site. The next thing is that we have got to modify our workflow. We've got to instruct
+GitHub that hey please use this federated identity, those federated credentials to authenticate.
+And basically we've got to make two changes. So first of all we've got to add some permissions
+to the workflow.
+to be able to exchange some tokens with Databricks.
+That's required.
+So that's one thing.
+And secondly, we've got to indicate some variables
+that will be used by the workflow as follows.
+So first of all, please use dev GitHub environment,
+this configuration, why?
+Because we know that our Federation policy
+we've just defined, it applies only
+when using this dev environment.
+Secondly, we defined this GitHub OpenID Connect
+as authentication type.
+It tells GitHub, hey, use this federated identity stuff.
+I indicated where is my Databricks host located
+and we've got to provide client ID of the service principal
+that will be used for the login purposes and we can get this from here that's the application id
+so let me copy this let me paste it here and that should be fine so let me
+push this to the repo add that OpenID Connect stuff and hopefully everything will work
+so let's jump back to our GitHub repository to actions and let's see if this time deployment
+will pass and you can see that we already passed the step that previously failed right
+and actually let's see who is logged in and oh please we can see that display name
+is set to our service principal that we defined in Databricks So GitHub action uses this service principal credentials
+to connect to Databricks.
+So everything looks fine, right?
+Then we were able to deploy,
+to validate our Databricks asset bundle
+and deploy it, right?
+Everything went fine.
+our our action faces green checkbox so let's verify this let's jump to other Databricks workspace
+let's see jobs and pipelines and yes we've got this hello world pipeline that was deployed and
+created by using this Databricks managed service principal and let me run it to verify that
+everything works and inside we can see that that yes um the creator and the runner's identity is the
+um principal that we created in Databricks and when it comes to tasks it has this very simple
+single um python script task right so everything looks fine and about execution
+it was executed and it printed hello world statement so everything works fine
+one thing to check all right it works and please know that I didn't specify any secret
+anywhere right no password this thing that might look like some secret stuff it is just an
+identifier of my service principal so it is not a secret.
+You can safely push this to the repository.
+And let's say
+what will happen if we try to use the same
+service principal but on a production environment.
+And let's see
+if it will work. Changed it to prod.
+This is to verify if our federation policy indeed restricts the usage of the service principal to the environment only.
+And let's verify this in actions. Hopefully it will fail. And yes, it failed.
+it failed because invalid grant is defined right basically and the stuff
+that we configured in GitHub action it doesn't match the stuff we configured in
+our Federation policy which simply means that it is not possible to overuse those
+permissions right just to copy this workflow definition and use it in another repository
+it will fail as well right because the federation policy limits the users of the service principal
+to this repository only the same if we change the environment to prod right so basically
+by using this federated credentials what we achieved so first of all no secrets no passwords
+nothing is stored there is nothing we have to rotate periodically it simply works it is clean
+it is elegant it is secure secondly those permissions are narrowed down to be used only
+from my repository and only when deploying to dev environment so it is not possible just to grab
+the code copy it and use it in another place just hoping that I would get access to
+to my environment no it's empty words please be aware that in this scenario
+we used a service principal defined in Azure Databricks so our GitHub workflow
+will be able to access only Databricks.
+It will not be able to go outside,
+like to deploy anything to Azure Data Factory,
+some logic app, or whatever you want, right?
+This scenario, it focuses only on doing stuff
+inside Databricks.
+If you would like to use a more enterprise version
+in which you still use federated stuff,
+but you can deploy more things than Databricks,
+then check out another video inside,
+which I talk about how to do this
+using Entra Managed Service Principal.
+And basically that's it for today.
+Thanks for watching and see you next time.
+Take care.

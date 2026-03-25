@@ -1,0 +1,894 @@
+[
+  {
+    "timestamp": "00:00:00",
+    "text": "Hey there. So let's say you implemented your Databricks code,"
+  },
+  {
+    "timestamp": "00:00:05",
+    "text": "you store it in a GitHub repository,"
+  },
+  {
+    "timestamp": "00:00:07",
+    "text": "and now you would like to deploy it to"
+  },
+  {
+    "timestamp": "00:00:09",
+    "text": "Azure Databricks in a secure way without using"
+  },
+  {
+    "timestamp": "00:00:13",
+    "text": "your personal accounts or any passwords or secrets."
+  },
+  {
+    "timestamp": "00:00:16",
+    "text": "In this episode, I will show you how to do this"
+  },
+  {
+    "timestamp": "00:00:20",
+    "text": "securely using federated credentials defined in Azure Databricks."
+  },
+  {
+    "timestamp": "00:00:25",
+    "text": "So let's get started."
+  },
+  {
+    "timestamp": "00:00:28",
+    "text": "Alright, so let me show you the scenario. So basically we have a GitHub repository with our code and I have a target Databricks workspace to which I would like to deploy stuff."
+  },
+  {
+    "timestamp": "00:00:42",
+    "text": "So basically my goal is as follows. I want to grab code from the GitHub repository and deploy it to Databricks. And you might say, all right, but we've been doing this already using a service principal defined in Entra with some secret. And it worked, right? So why should we bother with a different approach?"
+  },
+  {
+    "timestamp": "00:01:07",
+    "text": "And the reason is, yes, this approach works, but it has two big issues."
+  },
+  {
+    "timestamp": "00:01:14",
+    "text": "So first of all, a secret, a password is used."
+  },
+  {
+    "timestamp": "00:01:19",
+    "text": "That might leak and someone might use it in a malicious way to mess around with your environment."
+  },
+  {
+    "timestamp": "00:01:26",
+    "text": "Which is a risk, right?"
+  },
+  {
+    "timestamp": "00:01:28",
+    "text": "The second thing is that those secrets, they have expiration period."
+  },
+  {
+    "timestamp": "00:01:33",
+    "text": "And they have to be rotated periodically."
+  },
+  {
+    "timestamp": "00:01:35",
+    "text": "and then update it in your deployment pipeline."
+  },
+  {
+    "timestamp": "00:01:40",
+    "text": "And very often people forget to do so,"
+  },
+  {
+    "timestamp": "00:01:42",
+    "text": "which results in your deployment to start failing."
+  },
+  {
+    "timestamp": "00:01:46",
+    "text": "And that's why we want to use a different method."
+  },
+  {
+    "timestamp": "00:01:48",
+    "text": "We want to skip using those passwords entirely."
+  },
+  {
+    "timestamp": "00:01:53",
+    "text": "And at the same time, we want it to be secure."
+  },
+  {
+    "timestamp": "00:01:57",
+    "text": "And that's where federated credentials will be very useful."
+  },
+  {
+    "timestamp": "00:02:01",
+    "text": "So what I will do in this episode will be to create a new service principal inside Azure Databricks, now in Entra, in Databricks, and then I will use it during the deployment phase."
+  },
+  {
+    "timestamp": "00:02:19",
+    "text": "But now, how to make GitHub to be able to use this service principal? Well, that's where we'll create a federation policy object tied with a service principal."
+  },
+  {
+    "timestamp": "00:02:36",
+    "text": "that will define it it will allow GitHub to use this particular service"
+  },
+  {
+    "timestamp": "00:02:45",
+    "text": "principal but only from my GitHub repository and only when using specific"
+  },
+  {
+    "timestamp": "00:02:53",
+    "text": "GitHub environment like dev and prod and in this scenario tokens will be"
+  },
+  {
+    "timestamp": "00:02:59",
+    "text": "exchanged between GitHub and Databricks and it will work without providing any"
+  },
+  {
+    "timestamp": "00:03:07",
+    "text": "secrets or any passwords explicitly. So let me show you that in action. So I have"
+  },
+  {
+    "timestamp": "00:03:18",
+    "text": "a GitHub repository, very simple one, this federated identity Databricks. It"
+  },
+  {
+    "timestamp": "00:03:24",
+    "text": "It contains a very simple code that I cloned to my local machine."
+  },
+  {
+    "timestamp": "00:03:30",
+    "text": "And basically what I have here is a job definition,"
+  },
+  {
+    "timestamp": "00:03:34",
+    "text": "Databricks job, this hello world one,"
+  },
+  {
+    "timestamp": "00:03:36",
+    "text": "that contains only a single Python step"
+  },
+  {
+    "timestamp": "00:03:41",
+    "text": "that runs this hello.py script"
+  },
+  {
+    "timestamp": "00:03:44",
+    "text": "that in turn prints hello world statement."
+  },
+  {
+    "timestamp": "00:03:48",
+    "text": "And I configured a very simple Databricks asset bundle"
+  },
+  {
+    "timestamp": "00:03:52",
+    "text": "use to deploy this job to a target environment."
+  },
+  {
+    "timestamp": "00:03:56",
+    "text": "A very simple scenario."
+  },
+  {
+    "timestamp": "00:03:58",
+    "text": "Now, in my GitHub repository,"
+  },
+  {
+    "timestamp": "00:04:02",
+    "text": "I don't have any actions defined yet"
+  },
+  {
+    "timestamp": "00:04:05",
+    "text": "to deploy my stuff to Databricks."
+  },
+  {
+    "timestamp": "00:04:09",
+    "text": "So let's start with doing this."
+  },
+  {
+    "timestamp": "00:04:11",
+    "text": "And to avoid creating everything from scratch,"
+  },
+  {
+    "timestamp": "00:04:14",
+    "text": "let me use this very simple template."
+  },
+  {
+    "timestamp": "00:04:18",
+    "text": "So let me find it."
+  },
+  {
+    "timestamp": "00:04:20",
+    "text": "It's called simple workflow. In our case it is fine. We'll adjust it in a second. Let's give it a name and let's verify what it does. So basically it triggers on a push to main branch, pull request to main and it can be run manually. That's fine."
+  },
+  {
+    "timestamp": "00:04:42",
+    "text": "Then it runs on some Linux machine it gets the repo and it prints some hello world statements which we don't need actually So let me remove this oh or let me remove all of this and that's it and let's commit those changes and please know that I'm doing this directly on the main branch"
+  },
+  {
+    "timestamp": "00:05:09",
+    "text": "you shouldn't do this in action in real life but for demo purposes this is fine"
+  },
+  {
+    "timestamp": "00:05:14",
+    "text": "and because I made a commit it already resulted in my GitHub action being triggered and actually"
+  },
+  {
+    "timestamp": "00:05:25",
+    "text": "it went fine it is green it didn't do anything yet with my Databricks code but at least we can see that"
+  },
+  {
+    "timestamp": "00:05:32",
+    "text": "the trigger works so let's jump to VS Code let me pull those changes and let's update the workflow"
+  },
+  {
+    "timestamp": "00:05:42",
+    "text": "definition. And now we know that to deploy Databricks asset bundles we have to first"
+  },
+  {
+    "timestamp": "00:05:50",
+    "text": "of all install Databricks CLI and then run this Databricks bundle validate and"
+  },
+  {
+    "timestamp": "00:05:57",
+    "text": "Databricks bundle deploy commands. So let's add them to our workflow definition."
+  },
+  {
+    "timestamp": "00:06:05",
+    "text": "So let me just copy them"
+  },
+  {
+    "timestamp": "00:06:06",
+    "text": "and paste it."
+  },
+  {
+    "timestamp": "00:06:10",
+    "text": "Alright, so here it is."
+  },
+  {
+    "timestamp": "00:06:13",
+    "text": "Install Databricks CLI,"
+  },
+  {
+    "timestamp": "00:06:15",
+    "text": "check who is logged into Databricks to Databricks CLI"
+  },
+  {
+    "timestamp": "00:06:19",
+    "text": "and then validate and deploy my Databricks asset bundle."
+  },
+  {
+    "timestamp": "00:06:24",
+    "text": "So let me commit this to the repository"
+  },
+  {
+    "timestamp": "00:06:27",
+    "text": "like added Databricks steps"
+  },
+  {
+    "timestamp": "00:06:33",
+    "text": "and let's push it."
+  },
+  {
+    "timestamp": "00:06:36",
+    "text": "that should trigger the pipeline, deployment pipeline,"
+  },
+  {
+    "timestamp": "00:06:43",
+    "text": "that is running."
+  },
+  {
+    "timestamp": "00:06:45",
+    "text": "And actually at this moment, it should fail, right?"
+  },
+  {
+    "timestamp": "00:06:49",
+    "text": "Because we didn't specify any authentication yet."
+  },
+  {
+    "timestamp": "00:06:53",
+    "text": "So it would be very bad if anyone could just deploy"
+  },
+  {
+    "timestamp": "00:06:57",
+    "text": "and define a deployment workflow to connect"
+  },
+  {
+    "timestamp": "00:07:02",
+    "text": "and to deploy stuff to my Databricks environment."
+  },
+  {
+    "timestamp": "00:07:06",
+    "text": "So we expect this to fail."
+  },
+  {
+    "timestamp": "00:07:09",
+    "text": "And it did, it failed."
+  },
+  {
+    "timestamp": "00:07:11",
+    "text": "With error that default authentication,"
+  },
+  {
+    "timestamp": "00:07:14",
+    "text": "I cannot configure default credentials, blah, blah, blah."
+  },
+  {
+    "timestamp": "00:07:17",
+    "text": "Basically, it means that we are not authenticated."
+  },
+  {
+    "timestamp": "00:07:20",
+    "text": "So let's fix this."
+  },
+  {
+    "timestamp": "00:07:23",
+    "text": "So following our design, we would like to make it secure."
+  },
+  {
+    "timestamp": "00:07:29",
+    "text": "So first of all, in my GitHub environment,"
+  },
+  {
+    "timestamp": "00:07:32",
+    "text": "in my repository, I will create two environments,"
+  },
+  {
+    "timestamp": "00:07:36",
+    "text": "dev and prod."
+  },
+  {
+    "timestamp": "00:07:38",
+    "text": "And that's basically what you do in your projects"
+  },
+  {
+    "timestamp": "00:07:40",
+    "text": "because you might use different variables,"
+  },
+  {
+    "timestamp": "00:07:43",
+    "text": "different secrets per environment,"
+  },
+  {
+    "timestamp": "00:07:46",
+    "text": "or you might have a different protection rules"
+  },
+  {
+    "timestamp": "00:07:51",
+    "text": "per environment."
+  },
+  {
+    "timestamp": "00:07:52",
+    "text": "And we'll use those environments"
+  },
+  {
+    "timestamp": "00:07:53",
+    "text": "in our federation policy in a second."
+  },
+  {
+    "timestamp": "00:07:57",
+    "text": "So let me define those environments"
+  },
+  {
+    "timestamp": "00:08:00",
+    "text": "like dev and prod."
+  },
+  {
+    "timestamp": "00:08:03",
+    "text": "I will not configure them in any way"
+  },
+  {
+    "timestamp": "00:08:06",
+    "text": "because that's not necessary at this point."
+  },
+  {
+    "timestamp": "00:08:10",
+    "text": "We just need them to exist."
+  },
+  {
+    "timestamp": "00:08:13",
+    "text": "So we have dev and prod, and I will be using dev."
+  },
+  {
+    "timestamp": "00:08:19",
+    "text": "The next step is to create our service principal"
+  },
+  {
+    "timestamp": "00:08:23",
+    "text": "in Azure Databricks, not in Entra, in Azure Databricks."
+  },
+  {
+    "timestamp": "00:08:28",
+    "text": "This scenario focuses on doing everything inside Databricks."
+  },
+  {
+    "timestamp": "00:08:34",
+    "text": "And by the way, that's my Databricks workspace."
+  },
+  {
+    "timestamp": "00:08:37",
+    "text": "And we can see that at this moment,"
+  },
+  {
+    "timestamp": "00:08:39",
+    "text": "there are no jobs deployed yet."
+  },
+  {
+    "timestamp": "00:08:42",
+    "text": "I mean, I have some leftovers from previous demos,"
+  },
+  {
+    "timestamp": "00:08:45",
+    "text": "but we don't have this hello world job."
+  },
+  {
+    "timestamp": "00:08:50",
+    "text": "So to add a new service principal,"
+  },
+  {
+    "timestamp": "00:08:54",
+    "text": "I will switch to Databricks account console."
+  },
+  {
+    "timestamp": "00:08:58",
+    "text": "this view that is available only to Databricks account admins, so it requires high privileges."
+  },
+  {
+    "timestamp": "00:09:07",
+    "text": "Then in user management, I will just create a new service principal and let's call it"
+  },
+  {
+    "timestamp": "00:09:14",
+    "text": "Databricks managed service principal dev as follows."
+  },
+  {
+    "timestamp": "00:09:22",
+    "text": "And yes, please create this."
+  },
+  {
+    "timestamp": "00:09:24",
+    "text": "Alright, so we have a service principal, an identity in context of which our deployment will be executed."
+  },
+  {
+    "timestamp": "00:09:33",
+    "text": "But we don't have this federation policy yet."
+  },
+  {
+    "timestamp": "00:09:37",
+    "text": "This thing that allows GitHub to use this credential."
+  },
+  {
+    "timestamp": "00:09:42",
+    "text": "And to make it work, we've got to create it, right?"
+  },
+  {
+    "timestamp": "00:09:45",
+    "text": "So let's jump into credentials and secrets tab."
+  },
+  {
+    "timestamp": "00:09:48",
+    "text": "And let's create a new policy for this service principal We got to select provider that will use this policy And in our case it is GitHub Actions"
+  },
+  {
+    "timestamp": "00:10:02",
+    "text": "because we want to use this service principal"
+  },
+  {
+    "timestamp": "00:10:04",
+    "text": "from GitHub Actions."
+  },
+  {
+    "timestamp": "00:10:08",
+    "text": "Then we've got to provide a name of our GitHub organization."
+  },
+  {
+    "timestamp": "00:10:13",
+    "text": "In my case, it is Table on Azure."
+  },
+  {
+    "timestamp": "00:10:17",
+    "text": "You can see this in a URL to your repo."
+  },
+  {
+    "timestamp": "00:10:22",
+    "text": "So let me copy this."
+  },
+  {
+    "timestamp": "00:10:25",
+    "text": "Then we've got to provide a repository that will be allowed to use our service principal."
+  },
+  {
+    "timestamp": "00:10:32",
+    "text": "And in my case, it is federated identity Databricks."
+  },
+  {
+    "timestamp": "00:10:37",
+    "text": "Again, from URL."
+  },
+  {
+    "timestamp": "00:10:41",
+    "text": "So let me paste this."
+  },
+  {
+    "timestamp": "00:10:42",
+    "text": "Then we've got a choice that allows us to narrow down scenarios in which this policy and the service principal can be used."
+  },
+  {
+    "timestamp": "00:10:55",
+    "text": "I want to use environments. That's why we defined them previously."
+  },
+  {
+    "timestamp": "00:11:00",
+    "text": "and basically I want to define that this service principal will be allowed to be used only from"
+  },
+  {
+    "timestamp": "00:11:11",
+    "text": "this repository on from this organization and only when deploying stuff to GitHub dev environment"
+  },
+  {
+    "timestamp": "00:11:21",
+    "text": "that's what we are configuring here and the rest of the stuff is fine and let me create the policy"
+  },
+  {
+    "timestamp": "00:11:29",
+    "text": "and that's it"
+  },
+  {
+    "timestamp": "00:11:31",
+    "text": "the next thing to do is to basically create this service principal"
+  },
+  {
+    "timestamp": "00:11:38",
+    "text": "in my Databricks workspace"
+  },
+  {
+    "timestamp": "00:11:40",
+    "text": "so let's jump back to my workspace"
+  },
+  {
+    "timestamp": "00:11:43",
+    "text": "and here in the settings"
+  },
+  {
+    "timestamp": "00:11:45",
+    "text": "in identity and access, service principals"
+  },
+  {
+    "timestamp": "00:11:49",
+    "text": "I don't have my service principal available in this workspace yet"
+  },
+  {
+    "timestamp": "00:11:55",
+    "text": "so let me add it"
+  },
+  {
+    "timestamp": "00:11:57",
+    "text": "that's the name of my service principal"
+  },
+  {
+    "timestamp": "00:12:01",
+    "text": "and yes please add it. So what I did right now"
+  },
+  {
+    "timestamp": "00:12:05",
+    "text": "was to make this Databricks managed"
+  },
+  {
+    "timestamp": "00:12:10",
+    "text": "dev service principal available"
+  },
+  {
+    "timestamp": "00:12:13",
+    "text": "in my target Databricks workspace"
+  },
+  {
+    "timestamp": "00:12:17",
+    "text": "right and that's it. So we have"
+  },
+  {
+    "timestamp": "00:12:21",
+    "text": "everything configured on the Databricks"
+  },
+  {
+    "timestamp": "00:12:24",
+    "text": "site. The next thing is that we have got to modify our workflow. We've got to instruct"
+  },
+  {
+    "timestamp": "00:12:33",
+    "text": "GitHub that hey please use this federated identity, those federated credentials to authenticate."
+  },
+  {
+    "timestamp": "00:12:40",
+    "text": "And basically we've got to make two changes. So first of all we've got to add some permissions"
+  },
+  {
+    "timestamp": "00:12:49",
+    "text": "to the workflow."
+  },
+  {
+    "timestamp": "00:12:54",
+    "text": "to be able to exchange some tokens with Databricks."
+  },
+  {
+    "timestamp": "00:12:58",
+    "text": "That's required."
+  },
+  {
+    "timestamp": "00:12:59",
+    "text": "So that's one thing."
+  },
+  {
+    "timestamp": "00:13:01",
+    "text": "And secondly, we've got to indicate some variables"
+  },
+  {
+    "timestamp": "00:13:08",
+    "text": "that will be used by the workflow as follows."
+  },
+  {
+    "timestamp": "00:13:11",
+    "text": "So first of all, please use dev GitHub environment,"
+  },
+  {
+    "timestamp": "00:13:16",
+    "text": "this configuration, why?"
+  },
+  {
+    "timestamp": "00:13:18",
+    "text": "Because we know that our Federation policy"
+  },
+  {
+    "timestamp": "00:13:21",
+    "text": "we've just defined, it applies only"
+  },
+  {
+    "timestamp": "00:13:23",
+    "text": "when using this dev environment."
+  },
+  {
+    "timestamp": "00:13:26",
+    "text": "Secondly, we defined this GitHub OpenID Connect"
+  },
+  {
+    "timestamp": "00:13:32",
+    "text": "as authentication type."
+  },
+  {
+    "timestamp": "00:13:33",
+    "text": "It tells GitHub, hey, use this federated identity stuff."
+  },
+  {
+    "timestamp": "00:13:40",
+    "text": "I indicated where is my Databricks host located"
+  },
+  {
+    "timestamp": "00:13:47",
+    "text": "and we've got to provide client ID of the service principal"
+  },
+  {
+    "timestamp": "00:13:52",
+    "text": "that will be used for the login purposes and we can get this from here that's the application id"
+  },
+  {
+    "timestamp": "00:14:02",
+    "text": "so let me copy this let me paste it here and that should be fine so let me"
+  },
+  {
+    "timestamp": "00:14:10",
+    "text": "push this to the repo add that OpenID Connect stuff and hopefully everything will work"
+  },
+  {
+    "timestamp": "00:14:20",
+    "text": "so let's jump back to our GitHub repository to actions and let's see if this time deployment"
+  },
+  {
+    "timestamp": "00:14:31",
+    "text": "will pass and you can see that we already passed the step that previously failed right"
+  },
+  {
+    "timestamp": "00:14:39",
+    "text": "and actually let's see who is logged in and oh please we can see that display name"
+  },
+  {
+    "timestamp": "00:14:48",
+    "text": "is set to our service principal that we defined in Databricks So GitHub action uses this service principal credentials"
+  },
+  {
+    "timestamp": "00:15:00",
+    "text": "to connect to Databricks."
+  },
+  {
+    "timestamp": "00:15:03",
+    "text": "So everything looks fine, right?"
+  },
+  {
+    "timestamp": "00:15:06",
+    "text": "Then we were able to deploy,"
+  },
+  {
+    "timestamp": "00:15:10",
+    "text": "to validate our Databricks asset bundle"
+  },
+  {
+    "timestamp": "00:15:12",
+    "text": "and deploy it, right?"
+  },
+  {
+    "timestamp": "00:15:15",
+    "text": "Everything went fine."
+  },
+  {
+    "timestamp": "00:15:16",
+    "text": "our our action faces green checkbox so let's verify this let's jump to other Databricks workspace"
+  },
+  {
+    "timestamp": "00:15:27",
+    "text": "let's see jobs and pipelines and yes we've got this hello world pipeline that was deployed and"
+  },
+  {
+    "timestamp": "00:15:35",
+    "text": "created by using this Databricks managed service principal and let me run it to verify that"
+  },
+  {
+    "timestamp": "00:15:41",
+    "text": "everything works and inside we can see that that yes um the creator and the runner's identity is the"
+  },
+  {
+    "timestamp": "00:15:53",
+    "text": "um principal that we created in Databricks and when it comes to tasks it has this very simple"
+  },
+  {
+    "timestamp": "00:16:01",
+    "text": "single um python script task right so everything looks fine and about execution"
+  },
+  {
+    "timestamp": "00:16:09",
+    "text": "it was executed and it printed hello world statement so everything works fine"
+  },
+  {
+    "timestamp": "00:16:17",
+    "text": "one thing to check all right it works and please know that I didn't specify any secret"
+  },
+  {
+    "timestamp": "00:16:26",
+    "text": "anywhere right no password this thing that might look like some secret stuff it is just an"
+  },
+  {
+    "timestamp": "00:16:34",
+    "text": "identifier of my service principal so it is not a secret."
+  },
+  {
+    "timestamp": "00:16:38",
+    "text": "You can safely push this to the repository."
+  },
+  {
+    "timestamp": "00:16:42",
+    "text": "And let's say"
+  },
+  {
+    "timestamp": "00:16:45",
+    "text": "what will happen if we try to use the same"
+  },
+  {
+    "timestamp": "00:16:49",
+    "text": "service principal but on a production environment."
+  },
+  {
+    "timestamp": "00:16:52",
+    "text": "And let's see"
+  },
+  {
+    "timestamp": "00:16:56",
+    "text": "if it will work. Changed it to prod."
+  },
+  {
+    "timestamp": "00:16:59",
+    "text": "This is to verify if our federation policy indeed restricts the usage of the service principal to the environment only."
+  },
+  {
+    "timestamp": "00:17:12",
+    "text": "And let's verify this in actions. Hopefully it will fail. And yes, it failed."
+  },
+  {
+    "timestamp": "00:17:21",
+    "text": "it failed because invalid grant is defined right basically and the stuff"
+  },
+  {
+    "timestamp": "00:17:33",
+    "text": "that we configured in GitHub action it doesn't match the stuff we configured in"
+  },
+  {
+    "timestamp": "00:17:38",
+    "text": "our Federation policy which simply means that it is not possible to overuse those"
+  },
+  {
+    "timestamp": "00:17:47",
+    "text": "permissions right just to copy this workflow definition and use it in another repository"
+  },
+  {
+    "timestamp": "00:17:54",
+    "text": "it will fail as well right because the federation policy limits the users of the service principal"
+  },
+  {
+    "timestamp": "00:17:59",
+    "text": "to this repository only the same if we change the environment to prod right so basically"
+  },
+  {
+    "timestamp": "00:18:08",
+    "text": "by using this federated credentials what we achieved so first of all no secrets no passwords"
+  },
+  {
+    "timestamp": "00:18:15",
+    "text": "nothing is stored there is nothing we have to rotate periodically it simply works it is clean"
+  },
+  {
+    "timestamp": "00:18:21",
+    "text": "it is elegant it is secure secondly those permissions are narrowed down to be used only"
+  },
+  {
+    "timestamp": "00:18:31",
+    "text": "from my repository and only when deploying to dev environment so it is not possible just to grab"
+  },
+  {
+    "timestamp": "00:18:40",
+    "text": "the code copy it and use it in another place just hoping that I would get access to"
+  },
+  {
+    "timestamp": "00:18:48",
+    "text": "to my environment no it's empty words please be aware that in this scenario"
+  },
+  {
+    "timestamp": "00:18:57",
+    "text": "we used a service principal defined in Azure Databricks so our GitHub workflow"
+  },
+  {
+    "timestamp": "00:19:05",
+    "text": "will be able to access only Databricks."
+  },
+  {
+    "timestamp": "00:19:10",
+    "text": "It will not be able to go outside,"
+  },
+  {
+    "timestamp": "00:19:12",
+    "text": "like to deploy anything to Azure Data Factory,"
+  },
+  {
+    "timestamp": "00:19:16",
+    "text": "some logic app, or whatever you want, right?"
+  },
+  {
+    "timestamp": "00:19:19",
+    "text": "This scenario, it focuses only on doing stuff"
+  },
+  {
+    "timestamp": "00:19:23",
+    "text": "inside Databricks."
+  },
+  {
+    "timestamp": "00:19:25",
+    "text": "If you would like to use a more enterprise version"
+  },
+  {
+    "timestamp": "00:19:31",
+    "text": "in which you still use federated stuff,"
+  },
+  {
+    "timestamp": "00:19:34",
+    "text": "but you can deploy more things than Databricks,"
+  },
+  {
+    "timestamp": "00:19:37",
+    "text": "then check out another video inside,"
+  },
+  {
+    "timestamp": "00:19:41",
+    "text": "which I talk about how to do this"
+  },
+  {
+    "timestamp": "00:19:43",
+    "text": "using Entra Managed Service Principal."
+  },
+  {
+    "timestamp": "00:19:48",
+    "text": "And basically that's it for today."
+  },
+  {
+    "timestamp": "00:19:50",
+    "text": "Thanks for watching and see you next time."
+  },
+  {
+    "timestamp": "00:19:52",
+    "text": "Take care."
+  }
+]
